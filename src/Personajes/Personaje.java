@@ -26,11 +26,11 @@ public abstract class Personaje {
 	    protected int precision;      // Probabilidad de acierto (opcional) 
 
 	    // --- 5. EQUIPAMIENTO ---
-	    protected Armas arma;          // Referencia obligatoria al objeto Arma 
+	    //protected Armas arma;          // Referencia obligatoria al objeto Arma 
 
 	    // --- 6. COLECCIONES ASOCIADAS ---
-	    protected ArrayList<Estados> estadosActivos; // Lista de DoTs/HoTs activos 
-	    protected ArrayList<Hechizos> hechizos;      // Lista de habilidades disponibles 
+	    //protected ArrayList<Estados> estadosActivos; // Lista de DoTs/HoTs activos 
+	    //protected ArrayList<Hechizos> hechizos;      // Lista de habilidades disponibles 
 	    protected Map<String, Integer> cooldowns;   // Mapa para turnos de reutilización 
 
 	    // --- 7. ESTADO DE COMBATE ---
