@@ -1,4 +1,4 @@
-package Personajes;
+package Clases;
 
 public class Duelista {
 
