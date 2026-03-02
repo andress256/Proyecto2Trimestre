@@ -1,9 +1,3 @@
-# Expedition 33 — RPG por Turnos
-
-Proyecto de programación orientada a objetos en Java. Motor de combate 3v3 por turnos con temática del videojuego **Clair Obscur: Expedition 33**.
-
----
-
 ## Diagrama de Clases
 
 ```mermaid
@@ -164,60 +158,4 @@ classDiagram
 
 ---
 
-## Estructura del proyecto
 
-```
-src/
-├── Main.java
-├── Personajes/
-│   ├── Personaje.java          ← clase base abstracta
-│   ├── TipoClase.java          ← enum de clases
-│   └── CatalogoPersonajes.java
-├── Clases/
-│   ├── Guerrero.java           ← heroes
-│   ├── Duelista.java
-│   ├── Mago.java
-│   ├── Sacerdote.java
-│   ├── Explorador.java
-│   ├── Ilusionista.java
-│   ├── CaballeroOscuro.java    ← villanos
-│   ├── MagoOscuro.java
-│   ├── BrutoPintado.java
-│   └── GuardianPintado.java
-├── Armas/
-│   ├── Arma.java
-│   ├── ArmaCuerpoACuerpo.java
-│   ├── ArmaADistancia.java
-│   └── CatalogoArmas.java
-├── Estados/
-│   ├── Estado.java
-│   ├── Quemadura.java
-│   ├── Veneno.java
-│   ├── Renovar.java
-│   └── Aturdido.java
-├── Hechizos/
-│   ├── Hechizo.java
-│   ├── LlamaPicta.java
-│   ├── ImpactoCalcinante.java
-│   ├── SombraCromatica.java
-│   ├── LuzCelestial.java
-│   ├── BrilloRenovador.java
-│   ├── FlechaEnvenenada.java
-│   ├── VeloDeIlusion.java
-│   ├── MaldicionDeLaPintora.java
-│   └── OleadaOscura.java
-└── Juego/
-    ├── Combate.java
-    └── Juego.java
-```
-
----
-
-## Conceptos aplicados
-
-- **Herencia** — `Personaje`, `Arma`, `Estado` y `Hechizo` como clases base abstractas
-- **Polimorfismo** — el motor de combate opera con referencias del tipo base sin conocer la subclase concreta
-- **Encapsulación** — cada clase gestiona su propio estado interno
-- **Colecciones** — `ArrayList` para equipos, estados y hechizos; `HashMap` para cooldowns
-- **Estados persistentes** — ciclo aplicar → procesar por turno → expirar
-- **Barra de aturdimiento** — se llena al recibir daño y provoca pérdida de turno al completarse
