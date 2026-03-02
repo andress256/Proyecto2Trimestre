@@ -1,10 +1,16 @@
 package Armas;
 
-public class Arma {
+import Personajes.Personaje;
 
-	public String getNombre() {
-		// TODO Auto-generated method stub
-		return null;
+public abstract class Arma {
+	protected String nombre;
+	protected int danioBase;
+	protected double probCritico;
+	protected double multiplicadorCritico;
+	
+	
+	public Arma (String nombre, int danioBase, double probCritico, double multiplicadorCritico) {
+		
 	}
-
+	
 }
