@@ -157,7 +157,7 @@ public abstract class Personaje {
 		int danioReal = Math.max(1, danio - objetivo.getDefensaBase());
 		System.out.printf("  %-16s ataca a %-16s -> %d dmg (HP: %d/%d)%n",
 				nombre, objetivo.getNombre(), danioReal,
-				Mathmax(0, objetivo.getVidaActual() - danioReal), objetivo.getVidaMax());
+				Math.max(0, objetivo.getVidaActual() - danioReal), objetivo.getVidaMax());
 		objetivo.recibirDanio(danioReal);
 	}
 	
@@ -183,4 +183,16 @@ public abstract class Personaje {
 		}
 		return sb.toString();
 	}
+	
+	public String getNombre() { return nombre;}
+	public TipoClase getTipoClase() { return tipoClase;}
+	public int getVidaActual() { return vidaActual;}
+	public int getVidaMax() { return vidaMax; }
+    public int getAtaqueBase() { return ataqueBase; }
+    public int getPoderMagico() { return poderMagico; }
+    public int getDefensaBase() { return defensaBase; }
+    public int getRecursoActual() { return recursoActual; }
+    public Arma getArma() { return arma; }
+    public List<Hechizo> getHechizos() { return hechizos; }
+    public Map<String, Integer> getCooldowns() { return cooldowns; }
 }
