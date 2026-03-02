@@ -1,32 +1,35 @@
 package Estados;
 
+import Estados.Estado.TipoEstado;
 import Personajes.Personaje;
 
-public class Estado {
+public abstract class Estado {
 
-	public void alProcesarTurno(Personaje personaje) {
-		// TODO Auto-generated method stub
-		
+	public enum TipoEstado { DOT, HOT, MODIFICADOR, CONTROL}
+	
+	protected String nombre;
+	protected int turnosRestantes;
+	protected int potenciaPorTurno;
+	protected TipoEstado tipo;
+	
+	public Estado(String nombre, int turnosRestantes, int potenciaPorTurno, TipoEstado tipo) {
+		this.nombre = nombre;
+		this.turnosRestantes = turnosRestantes;
+		this.potenciaPorTurno = potenciaPorTurno;
+		this.tipo = tipo;
 	}
-
-	public Object getNombre() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getTurnosRestantes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setTurnosRestantes(Object turnosRestantes) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	public abstract void alAplicar(Personaje objetivo);
+	public abstract void alProcesarTurno(Personaje objetivo);
+	public abstract void alExpirar(Personaje objetivo);
+	
 	public void reducirDuracion() {
-		// TODO Auto-generated method stub
-		
+		turnosRestantes--;
 	}
-
+	
+	public String getNombre() { return nombre; }
+    public int getTurnosRestantes() { return turnosRestantes; }
+    public int getPotenciaPorTurno() { return potenciaPorTurno; }
+    public TipoEstado getTipo() { return tipo; }
+	
 }
