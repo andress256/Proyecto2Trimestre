@@ -60,16 +60,16 @@ public abstract class Personaje {
 		return false;
 	}
 	
-	public void recibirDanio(int cantidad) {
-		int danioReal = Math.max(1, cantidad - defensaBase);
-		vidaActual = Math.max(0, vidaActual - danioReal);
-		incrementarBarraAturdimiento(danioReal);
+	public void recibirDaño(int cantidad) {
+		int dañoReal = Math.max(1, cantidad - defensaBase);
+		vidaActual = Math.max(0, vidaActual - dañoReal);
+		incrementarBarraAturdimiento(dañoReal);
 		if (!estaVivo()) {
 			System.out.println("  >>  " + nombre + " ha caido!");
 		}
 	}
 	
-	public void recibirDanioPuro(int cantidad) {
+	public void recibirDañoPuro(int cantidad) {
 		vidaActual = Math.max(0, vidaActual - cantidad);
 		if (!estaVivo()) {
 			System.out.println("  >>  " + nombre + " ha caido!");
@@ -147,18 +147,18 @@ public abstract class Personaje {
 		}
 	}
 	
-	public int calcularDanioBasicoContra(Personaje objetivo) {
+	public int calcularDañoBasicoContra(Personaje objetivo) {
 		if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
-		return arma.calcularDanio(this, objetivo);
+		return arma.calcularDaño(this, objetivo);
 	}
 	
 	public void atacarCon(Personaje objetivo) {
-		int danio = calcularDanioBasicoContra(objetivo);
-		int danioReal = Math.max(1, danio - objetivo.getDefensaBase());
+		int daño = calcularDañoBasicoContra(objetivo);
+		int dañoReal = Math.max(1, daño - objetivo.getDefensaBase());
 		System.out.printf("  %-16s ataca a %-16s -> %d dmg (HP: %d/%d)%n",
-				nombre, objetivo.getNombre(), danioReal,
-				Math.max(0, objetivo.getVidaActual() - danioReal), objetivo.getVidaMax());
-		objetivo.recibirDanio(danioReal);
+				nombre, objetivo.getNombre(), dañoReal,
+				Math.max(0, objetivo.getVidaActual() - dañoReal), objetivo.getVidaMax());
+		objetivo.recibirDaño(dañoReal);
 	}
 	
 	public abstract void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos);

@@ -20,7 +20,7 @@ public class Veneno extends Estado{
 		// TODO Auto-generated method stub
 		if(!objetivo.estaVivo()) return;
 		System.out.println(" Veneno: " + objetivo.getNombre() + " pierde " + potenciaPorTurno + " HP.");
-		objetivo.recibirDanioPuro(potenciaPorTurno);
+		objetivo.recibirDañoPuro(potenciaPorTurno);
 	}
 
 	@Override

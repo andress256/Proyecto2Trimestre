@@ -15,12 +15,12 @@ public class Guerrero extends Personaje {
     }
 
     @Override
-    public void recibirDanio(int cantidad) {
+    public void recibirDaño(int cantidad) {
         if (this.defendiendo) {
         
-            super.recibirDanio(cantidad / 2);
+            super.recibirDaño(cantidad / 2);
         } else {
-            super.recibirDanio(cantidad);
+            super.recibirDaño(cantidad);
         }
     }
     

@@ -20,7 +20,7 @@ public class Quemadura extends Estado{
 		// TODO Auto-generated method stub
 		if(!objetivo.estaVivo()) return;
 		System.out.println(" Quemadura: " + objetivo.getNombre() + " pierde " + potenciaPorTurno + " HP. ");
-		objetivo.recibirDanioPuro(potenciaPorTurno);
+		objetivo.recibirDañoPuro(potenciaPorTurno);
 	}
 
 	@Override
