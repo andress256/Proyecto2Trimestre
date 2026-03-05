@@ -19,7 +19,7 @@ public class ArmaCuerpoACuerpo extends Arma{
 	        }
 	        return daño; 
 	        
-    } //44
+    } //44y
 	@Override public String descripcion() { return "[CaC] " + super.descripcion(); }
 	
 }
