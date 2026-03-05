@@ -17,8 +17,9 @@ public class ArmaCuerpoACuerpo extends Arma{
 	            daño = (int)(daño * multiplicadorCritico);
 	            System.out.println("  [CRITICO!]");
 	        }
-	        return daño;
-	    }
+	        return daño; 
+	        
+    } //44
 	@Override public String descripcion() { return "[CaC] " + super.descripcion(); }
 	
 }
