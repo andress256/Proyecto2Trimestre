@@ -10,7 +10,7 @@ public abstract class Arma {
 	
 	
 	public Arma (String nombre, int dañoBase, double probCritico, double multiplicadorCritico) {
-		
+		//
 		this.nombre = nombre;
 		this.dañoBase = dañoBase;
 		this.probCritico = probCritico;
