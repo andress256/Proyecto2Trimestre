@@ -19,6 +19,14 @@ public abstract class Arma {
 	
 	public abstract int calcularDaño(Personaje atacante, Personaje defensor);
 		
+	protected boolean esCritico() {
+		return Math.random() < probCritico;
+	}
 	
+	public String descripcion() {
+		return nombre + " [Daño: " + dañoBase + " | Crit: " + (int)(probCritico * 100) + "%]";
+	}
 	
+	public String getNombre() { return nombre;}
+	public int getDañoBase() { return dañoBase;}
 }
