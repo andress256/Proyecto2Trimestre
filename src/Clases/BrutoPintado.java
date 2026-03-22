@@ -13,4 +13,12 @@ public class BrutoPintado extends Personaje {
 		this.arma = CatalogoArmas.defectoBruto();
 	}
 
+	@Override
+	public void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos) {
+		// TODO Auto-generated method stub
+		for (Personaje p : enemigos) {
+			if (p.estaVivo()) {atacarCon(p); return;}
+		}
+	}
+
 }

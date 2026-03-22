@@ -4,9 +4,10 @@ import Estados.Estado.TipoEstado;
 import Personajes.Personaje;
 
 public abstract class Estado {
-
+	//DOT: daño con el tiempo
+	//HOT: heal con el tiempo
 	public enum TipoEstado { DOT, HOT, MODIFICADOR, CONTROL}
-	
+	//enum crear la clase TipoEstado
 	protected String nombre;
 	protected int turnosRestantes;
 	protected int potenciaPorTurno;

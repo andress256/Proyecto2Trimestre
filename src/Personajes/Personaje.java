@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import Armas.Arma;
-import Clases.TipoClase;
+import Estados.Aturdido;
 import Estados.Estado;
 import Hechizos.Hechizo;
 
@@ -118,7 +118,7 @@ public abstract class Personaje {
 			e.reducirDuracion();
 			if(e.getTurnosRestantes() <= 0) {
 				e.alExpirar(this);
-				aElminar.add(e);
+				aEliminar.add(e);
 			}
 		}
 		estadosActivos.removeAll(aEliminar);
