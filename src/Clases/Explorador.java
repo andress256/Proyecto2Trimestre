@@ -6,6 +6,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Heroe a distancia. Usa flechas envenenadas contra el enemigo mas resistente.
 public class Explorador extends Personaje {
     public Explorador(String nombre) {
         super(nombre, TipoClase.EXPLORADOR, 155, 90, 20, 10, 8, 85);

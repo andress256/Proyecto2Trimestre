@@ -4,6 +4,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Villano tanque. Su armadura cromatica absorbe 1 de cada 3 golpes.
 public class CaballeroOscuro extends Personaje {
     private int contadorGolpesRecibidos = 0;
 
@@ -35,3 +36,4 @@ public class CaballeroOscuro extends Personaje {
         if (objetivo != null) atacarCon(objetivo);
     }
 }
+

@@ -1,4 +1,3 @@
-
 package Clases;
 import Armas.CatalogoArmas;
 import Hechizos.Hechizo;
@@ -8,6 +7,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Heroe magico con alto poder. Lanza hechizos de daño directo y quemadura.
 public class Mago extends Personaje {
     public Mago(String nombre) {
         super(nombre, TipoClase.MAGO, 130, 160, 8, 35, 5, 80);

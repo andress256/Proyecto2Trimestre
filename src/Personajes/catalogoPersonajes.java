@@ -1,13 +1,14 @@
 package Personajes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import Clases.*;
 
+// Catalogo con todos los personajes disponibles del juego.
+// Permite obtener listas de heroes y villanos, y generar equipos aleatorios.
 public class catalogoPersonajes {
 
+	// Devuelve la lista completa de heroes disponibles
 	public static List<Personaje> obtenerHeroes() {
 		List<Personaje> lista = new ArrayList<>();
 		lista.add(new Guerrero("Gustave"));
@@ -19,6 +20,7 @@ public class catalogoPersonajes {
 		return lista;
 	}
 
+	// Devuelve la lista completa de villanos disponibles
 	public static List<Personaje> obtenerVillanos() {
 		List<Personaje> lista = new ArrayList<>();
 		lista.add(new CaballeroOscuro("Renoir"));
@@ -29,7 +31,8 @@ public class catalogoPersonajes {
 		lista.add(new GuardianPintado("Arquero del Monolito"));
 		return lista;
 	}
-	//genera equipo de los heroes
+
+	// Genera un equipo aleatorio de 3 heroes sin repetir
 	public static List<Personaje> generarEquipoHeroesRandom() {
 		List<Personaje> todos = obtenerHeroes();
 		List<Personaje> equipo = new ArrayList<>();
@@ -37,6 +40,7 @@ public class catalogoPersonajes {
 
 		while (equipo.size() < 3) {
 			int idx = (int) (Math.random() * todos.size());
+			// Solo añade el personaje si ese indice no se ha usado antes
 			if (!usados.contains(idx)) {
 				usados.add(idx);
 				equipo.add(todos.get(idx));
@@ -44,7 +48,8 @@ public class catalogoPersonajes {
 		}
 		return equipo;
 	}
-	
+
+	// Genera un equipo aleatorio de 3 villanos sin repetir
 	public static List<Personaje> generarEquipoVillanosRandom() {
 		List<Personaje> todos = obtenerVillanos();
 		List<Personaje> equipo = new ArrayList<>();
@@ -59,6 +64,5 @@ public class catalogoPersonajes {
 		}
 		return equipo;
 	}
-	
-	
 }
+

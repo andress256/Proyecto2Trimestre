@@ -7,6 +7,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Heroe de soporte. Cura a los aliados y tiene un bonus del 20% en curaciones.
 public class Sacerdote extends Personaje {
     public Sacerdote(String nombre) {
         super(nombre, TipoClase.SACERDOTE, 140, 130, 8, 22, 9, 100);
@@ -40,3 +41,4 @@ public class Sacerdote extends Personaje {
         for (Personaje p : enemigos) { if (p.estaVivo()) { atacarCon(p); return; } }
     }
 }
+

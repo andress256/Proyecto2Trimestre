@@ -9,6 +9,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Villano mago. Usa hechizos devastadores incluyendo Oleada Oscura en area.
 public class MagoOscuro extends Personaje {
     public MagoOscuro(String nombre) {
         super(nombre, TipoClase.MAGO_OSCURO, 170, 200, 10, 45, 6, 130);

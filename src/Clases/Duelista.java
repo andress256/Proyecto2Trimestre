@@ -6,6 +6,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Heroe rapido con altos criticos. Usa Sombra Cromatica para envenenar.
 public class Duelista extends Personaje {
     public Duelista(String nombre) {
         super(nombre, TipoClase.DUELISTA, 150, 80, 24, 12, 7, 90);

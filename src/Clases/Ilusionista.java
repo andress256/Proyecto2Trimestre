@@ -7,6 +7,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Heroe de apoyo. Cura y protege a los aliados mas debiles.
 public class Ilusionista extends Personaje {
     public Ilusionista(String nombre) {
         super(nombre, TipoClase.ILUSIONISTA, 135, 110, 10, 25, 8, 95);

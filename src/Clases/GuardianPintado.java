@@ -7,6 +7,7 @@ import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
+// Enemigo arquero. Aplica veneno y sombra cromatica a distancia.
 public class GuardianPintado extends Personaje {
     public GuardianPintado(String nombre) {
         super(nombre, TipoClase.GUARDIAN_PINTADO, 140, 70, 18, 10, 8, 90);
