@@ -153,12 +153,10 @@ public abstract class Personaje {
 	}
 	
 	public void atacarCon(Personaje objetivo) {
-		int daño = calcularDañoBasicoContra(objetivo);
-		int dañoReal = Math.max(1, daño - objetivo.getDefensaBase());
-		System.out.printf("  %-16s ataca a %-16s -> %d dmg (HP: %d/%d)%n",
-				nombre, objetivo.getNombre(), dañoReal,
-				Math.max(0, objetivo.getVidaActual() - dañoReal), objetivo.getVidaMax());
-		objetivo.recibirDaño(dañoReal);
+	    int daño = calcularDañoBasicoContra(objetivo);
+	    System.out.printf("  %-16s ataca a %-16s -> %d dmg%n",
+	        nombre, objetivo.getNombre(), daño);
+	    objetivo.recibirDaño(daño);
 	}
 	
 	public abstract void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos);

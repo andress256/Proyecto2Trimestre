@@ -12,7 +12,7 @@ public class Quemadura extends Estado{
 	@Override
 	public void alAplicar(Personaje objetivo) {
 		// TODO Auto-generated method stub
-		System.out.println("  " + objetivo.getNombre() + "queda en llamas. (Quemadura x" + turnosRestantes + "t)");
+		System.out.println("  " + objetivo.getNombre() + " queda en llamas. (Quemadura x" + turnosRestantes + "t)");
 	}
 
 	@Override

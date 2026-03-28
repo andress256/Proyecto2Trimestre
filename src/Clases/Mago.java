@@ -1,23 +1,29 @@
+
 package Clases;
-
-
+import Armas.CatalogoArmas;
+import Hechizos.Hechizo;
+import Hechizos.ImpactoCalcinante;
+import Hechizos.LlamaPicta;
 import Personajes.Personaje;
+import Personajes.TipoClase;
+import java.util.List;
 
 public class Mago extends Personaje {
+    public Mago(String nombre) {
+        super(nombre, TipoClase.MAGO, 130, 160, 8, 35, 5, 80);
+        this.arma = CatalogoArmas.BASTON_LUNE.getArma();
+        this.hechizos.add(new ImpactoCalcinante());
+        this.hechizos.add(new LlamaPicta());
+    }
 
-	public Mago(String nombre, String tipoClase, int vidaMax, int vidaActual, int recursoMax, int recursoActual,
-			int ataqueBase, int poderMagico, int defensaBase, int precision) {
-		super(nombre, tipoClase, vidaMax, vidaActual, recursoMax, recursoActual, ataqueBase, poderMagico, defensaBase,
-				precision);
-		// TODO Auto-generated constructor stub
-	}
-//cambiar variables de recursos
-	public Mago(String string, TipoClase mago, int i, int j, int k, int l, int m) {
-		super("Lune", TipoClase.MAGO, 150, 0, 30, 15, 0);
-		// TODO Auto-generated constructor stub
-	}
-
-	
-
-	
+    @Override
+    public void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos) {
+        Personaje objetivo = null;
+        for (Personaje p : enemigos) { if (p.estaVivo()) { objetivo = p; break; } }
+        if (objetivo == null) return;
+        for (Hechizo h : hechizos) {
+            if (h.puedeLanzarse(this)) { h.lanzar(this, objetivo); return; }
+        }
+        atacarCon(objetivo);
+    }
 }

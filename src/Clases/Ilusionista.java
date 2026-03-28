@@ -1,23 +1,18 @@
 package Clases;
 import Armas.CatalogoArmas;
-import Hechizos.BrilloRenovador;
 import Hechizos.Hechizo;
 import Hechizos.LuzCelestial;
+import Hechizos.VeloDeIlusion;
 import Personajes.Personaje;
 import Personajes.TipoClase;
 import java.util.List;
 
-public class Sacerdote extends Personaje {
-    public Sacerdote(String nombre) {
-        super(nombre, TipoClase.SACERDOTE, 140, 130, 8, 22, 9, 100);
-        this.arma = CatalogoArmas.ARCO_ESTELAR_SCIEL.getArma();
+public class Ilusionista extends Personaje {
+    public Ilusionista(String nombre) {
+        super(nombre, TipoClase.ILUSIONISTA, 135, 110, 10, 25, 8, 95);
+        this.arma = CatalogoArmas.VARITA_MONOCO.getArma();
+        this.hechizos.add(new VeloDeIlusion());
         this.hechizos.add(new LuzCelestial());
-        this.hechizos.add(new BrilloRenovador());
-    }
-
-    @Override
-    public void curar(int cantidad) {
-        super.curar((int)(cantidad * 1.20));
     }
 
     @Override
@@ -30,7 +25,7 @@ public class Sacerdote extends Personaje {
                 masDebil = p;
             }
         }
-        if (masDebil != null && masDebil.getVidaActual() < (int)(masDebil.getVidaMax() * 0.60)) {
+        if (masDebil != null && masDebil.getVidaActual() < (int)(masDebil.getVidaMax() * 0.70)) {
             for (Hechizo h : hechizos) {
                 if (h.getTipoObjetivo() == Hechizo.TipoObjetivo.ALIADO_UNICO && h.puedeLanzarse(this)) {
                     h.lanzar(this, masDebil); return;

@@ -1,36 +1,30 @@
 package Clases;
-
+import Armas.CatalogoArmas;
 import Personajes.Personaje;
+import Personajes.TipoClase;
+import java.util.List;
 
 public class Guerrero extends Personaje {
-
-    // Constructor vacío por defecto 
-    public Guerrero(String string, TipoClase guerrero, int i, int j, int k, int l, int m) {
-        super("Gus (Vanguardia)", TipoClase.GUERRERO, 150, 0, 30, 15, 0);
-    }
-
-    // Constructor con parámetros que llama a super
-    public Guerrero(String nombre, int vidaMax, int recursoMax, int ataqueBase, int defensaBase, int poderMagico) {
-        super(nombre, TipoClase.GUERRERO, vidaMax, recursoMax, ataqueBase, defensaBase, poderMagico);
+    public Guerrero(String nombre) {
+        super(nombre, TipoClase.GUERRERO, 200, 0, 28, 0, 14, 120);
+        this.arma = CatalogoArmas.ESPADON_GUSTAVE.getArma();
     }
 
     @Override
     public void recibirDaño(int cantidad) {
-        if (this.defendiendo) {
-        
-            super.recibirDaño(cantidad / 2);
-        } else {
-            super.recibirDaño(cantidad);
-        }
+        super.recibirDaño((int)(cantidad * 0.90));
     }
-    
+
     @Override
-    public String pedirInfo() {
-        return super.pedirInfo() + "\n\t [Pasiva Guerrero]: Gran resistencia física.";
-    }
-    
-    public String datos() {
-    	
-    	
+    public void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos) {
+        Personaje objetivo = null;
+        int menorVida = Integer.MAX_VALUE;
+        for (Personaje p : enemigos) {
+            if (p.estaVivo() && p.getVidaActual() < menorVida) {
+                menorVida = p.getVidaActual();
+                objetivo = p;
+            }
+        }
+        if (objetivo != null) atacarCon(objetivo);
     }
 }

@@ -23,7 +23,7 @@ public class catalogoPersonajes {
 		List<Personaje> lista = new ArrayList<>();
 		lista.add(new CaballeroOscuro("Renoir"));
 		lista.add(new MagoOscuro("La Pintora"));
-		lista.add(new Guardian("Esquie"));
+		lista.add(new GuardianPintado("Esquie"));
 		lista.add(new BrutoPintado("Bruto de Cendo"));
 		lista.add(new BrutoPintado("Centinela Oscuro"));
 		lista.add(new GuardianPintado("Arquero del Monolito"));

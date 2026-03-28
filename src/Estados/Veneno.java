@@ -12,7 +12,7 @@ public class Veneno extends Estado{
 	@Override
 	public void alAplicar(Personaje objetivo) {
 		// TODO Auto-generated method stub
-		System.out.println("  " + objetivo.getNombre() + "queda envenenado. (Veneno x" + turnosRestantes + "t)");
+		System.out.println("  " + objetivo.getNombre() + " queda envenenado. (Veneno x" + turnosRestantes + "t)");
 	}
 
 	@Override
