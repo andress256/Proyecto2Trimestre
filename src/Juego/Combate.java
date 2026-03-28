@@ -8,7 +8,7 @@ public class Combate {
     private List<Personaje> equipoHeroes;
     private List<Personaje> equipoVillanos;
     private int ronda;
-    private static final int PAUSA_MS = 4000;
+    private static final int PAUSA_MS = 3000;
 
     public Combate(List<Personaje> equipoHeroes, List<Personaje> equipoVillanos) {
         this.equipoHeroes = equipoHeroes;
