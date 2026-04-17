@@ -10,7 +10,7 @@ public class Combate {
 	private List<Personaje> equipoHeroes;
 	private List<Personaje> equipoVillanos;
 	private int ronda;
-	private static final int PAUSA_MS = 3000; // pausa entre acciones en milisegundos
+	private static final int PAUSA_MS = 300; // pausa entre acciones en milisegundos
 
 	public Combate(List<Personaje> equipoHeroes, List<Personaje> equipoVillanos) {
 		this.equipoHeroes = equipoHeroes;

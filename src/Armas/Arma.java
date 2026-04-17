@@ -2,8 +2,8 @@ package Armas;
 
 import Personajes.Personaje;
 
-// Clase base abstracta para todas las armas del juego.
-// Cada tipo de arma calcula el daño de forma distinta.
+	// Clase base abstracta para todas las armas del juego.
+	// Cada tipo de arma calcula el daño de forma distinta.
 public abstract class Arma {
 	protected String nombre;
 	protected int dañoBase;
