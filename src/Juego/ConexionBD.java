@@ -4,7 +4,7 @@ package Juego;
 	import java.sql.DriverManager;
 	import java.sql.SQLException;
 
-	public class Conexionbd {
+	public class ConexionBD {
 
 		private static final String URL      = "jdbc:mysql://localhost:3306/proyectorpg";
 		private static final String USUARIO  = "root";
@@ -15,4 +15,4 @@ package Juego;
 			return DriverManager.getConnection(URL, USUARIO, PASSWORD);
 		}
 	}
-}
+
