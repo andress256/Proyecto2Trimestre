@@ -7,6 +7,8 @@ import java.util.List;
 // Clase principal que arranca y controla el flujo del juego.
 // Genera los equipos aleatoriamente y lanza los combates.
 public class Juego {
+	
+	
 
 	private static final int TOTAL_COMBATES = 1; // numero de combates a simular
 

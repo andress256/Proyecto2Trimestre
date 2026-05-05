@@ -12,6 +12,20 @@ import Hechizos.Hechizo;
 
 // Clase base abstracta para todos los personajes del juego.
 // Contiene los atributos comunes y la logica compartida de combate.
+package Personajes;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import Armas.Arma;
+import Estados.Aturdido;
+import Estados.Estado;
+import Hechizos.Hechizo;
+
+// Clase base abstracta para todos los personajes del juego.
+// Contiene los atributos comunes y la logica compartida de combate.
 public abstract class Personaje {
 
 	protected String nombre;
@@ -208,8 +222,15 @@ public abstract class Personaje {
 	public int getPoderMagico() { return poderMagico; }
 	public int getDefensaBase() { return defensaBase; }
 	public int getRecursoActual() { return recursoActual; }
+	public int getRecursoMax() { return recursoMax; }
+	public int getBarraAturdimiento() { return barraAturdimiento; }
 	public Arma getArma() { return arma; }
 	public List<Hechizo> getHechizos() { return hechizos; }
 	public Map<String, Integer> getCooldowns() { return cooldowns; }
+
+	// Setters necesarios para cargar partidas desde la BD
+	public void setVidaActual(int v)        { this.vidaActual = Math.max(0, Math.min(vidaMax, v)); }
+	public void setRecursoActual(int v)     { this.recursoActual = Math.max(0, Math.min(recursoMax, v)); }
+	public void setBarraAturdimiento(int v) { this.barraAturdimiento = Math.max(0, v); }
 }
 
