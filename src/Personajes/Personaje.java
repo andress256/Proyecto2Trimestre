@@ -12,7 +12,6 @@ import Hechizos.Hechizo;
 
 // Clase base abstracta para todos los personajes del juego.
 // Contiene los atributos comunes y la logica compartida de combate.
-
 public abstract class Personaje {
 
 	protected String nombre;
@@ -87,7 +86,6 @@ public abstract class Personaje {
 
 	// Recupera vida sin superar el maximo
 	public void curar(int cantidad) {
-		int antes = vidaActual;
 		vidaActual = Math.min(vidaMax, vidaActual + cantidad);
 	}
 
@@ -267,4 +265,7 @@ public abstract class Personaje {
 		this.recursoActual = Math.max(0, Math.min(recursoMax, v));
 	}
 
-	public void setBarraAturdimiento(int v) { this.barraAturdimiento = Math.max(0, v); }
+	public void setBarraAturdimiento(int v) {
+		this.barraAturdimiento = Math.max(0, v);
+	}
+}
