@@ -1,6 +1,5 @@
 package Juego;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +30,8 @@ public class PartidaDAO {
 		public List<Personaje> villanos = new ArrayList<>();
 	}
 
-	public int crearPartida(String nombreJugador, List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
+	public int crearPartida(String nombreJugador, List<Personaje> heroes, List<Personaje> villanos)
+			throws SQLException {
 		String sqlPartida = "INSERT INTO partida (nombre_jugador, ronda_actual) VALUES (?, 1)";
 		String sqlPersonaje = "INSERT INTO personaje_partida (id_partida, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)";
 
@@ -43,14 +43,17 @@ public class PartidaDAO {
 				ps.setString(1, nombreJugador);
 				ps.executeUpdate();
 				try (ResultSet rs = ps.getGeneratedKeys()) {
-					if (!rs.next()) throw new SQLException("No se pudo obtener id_partida");
+					if (!rs.next())
+						throw new SQLException("No se pudo obtener id_partida");
 					idPartida = rs.getInt(1);
 				}
 			}
 
 			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
-				for (Personaje p : heroes) insertarPersonaje(ps, idPartida, p, true);
-				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, p, false);
+				for (Personaje p : heroes)
+					insertarPersonaje(ps, idPartida, p, true);
+				for (Personaje p : villanos)
+					insertarPersonaje(ps, idPartida, p, false);
 				ps.executeBatch();
 			}
 
@@ -59,7 +62,8 @@ public class PartidaDAO {
 		}
 	}
 
-	private void insertarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado) throws SQLException {
+	private void insertarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado)
+			throws SQLException {
 		ps.setInt(1, idPartida);
 		ps.setString(2, p.getNombre());
 		ps.setString(3, p.getTipoClase().toString());
@@ -76,14 +80,11 @@ public class PartidaDAO {
 		List<String> resultado = new ArrayList<>();
 
 		try (Connection conn = ConexionBD.getConexion();
-			 Statement st = conn.createStatement();
-			 ResultSet rs = st.executeQuery(sql)) {
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next()) {
-				resultado.add(String.format("[%d] %s - Ronda %d (%s)",
-					rs.getInt("id_partida"),
-					rs.getString("nombre_jugador"),
-					rs.getInt("ronda_actual"),
-					rs.getTimestamp("fecha_guardado")));
+				resultado.add(String.format("[%d] %s - Ronda %d (%s)", rs.getInt("id_partida"),
+						rs.getString("nombre_jugador"), rs.getInt("ronda_actual"), rs.getTimestamp("fecha_guardado")));
 			}
 		}
 		return resultado;
@@ -91,8 +92,7 @@ public class PartidaDAO {
 
 	public boolean existePartida(int idPartida) throws SQLException {
 		String sql = "SELECT COUNT(*) FROM partida WHERE id_partida = ?";
-		try (Connection conn = ConexionBD.getConexion();
-			 PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection conn = ConexionBD.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setInt(1, idPartida);
 			try (ResultSet rs = ps.executeQuery()) {
 				return rs.next() && rs.getInt(1) > 0;
@@ -112,7 +112,8 @@ public class PartidaDAO {
 			try (PreparedStatement ps = conn.prepareStatement(sqlCabecera)) {
 				ps.setInt(1, idPartida);
 				try (ResultSet rs = ps.executeQuery()) {
-					if (!rs.next()) throw new SQLException("Partida no encontrada");
+					if (!rs.next())
+						throw new SQLException("Partida no encontrada");
 					datos.nombreJugador = rs.getString("nombre_jugador");
 					datos.rondaActual = rs.getInt("ronda_actual");
 				}
@@ -123,14 +124,17 @@ public class PartidaDAO {
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
 						Personaje p = instanciarPorClase(rs.getString("clase"), rs.getString("nombre"));
-						if (p == null) continue;
+						if (p == null)
+							continue;
 
 						p.setVidaActual(rs.getInt("vida_actual"));
 						p.setRecursoActual(rs.getInt("recurso_actual"));
 						p.setBarraAturdimiento(rs.getInt("barra_aturdimiento"));
 
-						if (rs.getBoolean("es_aliado")) datos.heroes.add(p);
-						else datos.villanos.add(p);
+						if (rs.getBoolean("es_aliado"))
+							datos.heroes.add(p);
+						else
+							datos.villanos.add(p);
 					}
 				}
 			}
@@ -140,21 +144,22 @@ public class PartidaDAO {
 
 	private Personaje instanciarPorClase(String tipoClase, String nombre) {
 		return switch (tipoClase) {
-			case "GUERRERO" -> new Guerrero(nombre);
-			case "DUELISTA" -> new Duelista(nombre);
-			case "MAGO" -> new Mago(nombre);
-			case "SACERDOTE" -> new Sacerdote(nombre);
-			case "EXPLORADOR" -> new Explorador(nombre);
-			case "ILUSIONISTA" -> new Ilusionista(nombre);
-			case "CABALLERO_OSCURO" -> new CaballeroOscuro(nombre);
-			case "MAGO_OSCURO" -> new MagoOscuro(nombre);
-			case "BRUTO_PINTADO" -> new BrutoPintado(nombre);
-			case "GUARDIAN_PINTADO" -> new GuardianPintado(nombre);
-			default -> null;
+		case "GUERRERO" -> new Guerrero(nombre);
+		case "DUELISTA" -> new Duelista(nombre);
+		case "MAGO" -> new Mago(nombre);
+		case "SACERDOTE" -> new Sacerdote(nombre);
+		case "EXPLORADOR" -> new Explorador(nombre);
+		case "ILUSIONISTA" -> new Ilusionista(nombre);
+		case "CABALLERO_OSCURO" -> new CaballeroOscuro(nombre);
+		case "MAGO_OSCURO" -> new MagoOscuro(nombre);
+		case "BRUTO_PINTADO" -> new BrutoPintado(nombre);
+		case "GUARDIAN_PINTADO" -> new GuardianPintado(nombre);
+		default -> null;
 		};
 	}
 
-	public void guardarPartida(int idPartida, int rondaActual, List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
+	public void guardarPartida(int idPartida, int rondaActual, List<Personaje> heroes, List<Personaje> villanos)
+			throws SQLException {
 		String sqlPartida = "UPDATE partida SET ronda_actual = ? WHERE id_partida = ?";
 		String sqlPersonaje = "UPDATE personaje_partida SET vida_actual = ?, recurso_actual = ?, barra_aturdimiento = ? WHERE id_partida = ? AND nombre = ? AND es_aliado = ?";
 
@@ -168,8 +173,10 @@ public class PartidaDAO {
 			}
 
 			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
-				for (Personaje p : heroes) actualizarPersonaje(ps, idPartida, p, true);
-				for (Personaje p : villanos) actualizarPersonaje(ps, idPartida, p, false);
+				for (Personaje p : heroes)
+					actualizarPersonaje(ps, idPartida, p, true);
+				for (Personaje p : villanos)
+					actualizarPersonaje(ps, idPartida, p, false);
 				ps.executeBatch();
 			}
 
@@ -177,7 +184,8 @@ public class PartidaDAO {
 		}
 	}
 
-	private void actualizarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado) throws SQLException {
+	private void actualizarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado)
+			throws SQLException {
 		ps.setInt(1, p.getVidaActual());
 		ps.setInt(2, p.getRecursoActual());
 		ps.setInt(3, p.getBarraAturdimiento());
@@ -189,10 +197,9 @@ public class PartidaDAO {
 
 	public void borrarPartida(int idPartida) throws SQLException {
 		String sql = "DELETE FROM partida WHERE id_partida = ?";
-		try (Connection conn = ConexionBD.getConexion();
-			 PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection conn = ConexionBD.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setInt(1, idPartida);
 			ps.executeUpdate();
 		}
 	}
-	
+}
