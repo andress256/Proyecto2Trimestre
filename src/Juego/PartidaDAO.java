@@ -1,6 +1,5 @@
 package Juego;
 
-package Juego;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +21,7 @@ import Clases.MagoOscuro;
 import Clases.Sacerdote;
 import Personajes.Personaje;
 
-public class PartidaDAO extends Personaje {
+public class PartidaDAO {
 
 	public static class DatosPartida {
 		public int idPartida;
@@ -195,5 +194,5 @@ public class PartidaDAO extends Personaje {
 			ps.setInt(1, idPartida);
 			ps.executeUpdate();
 		}
-	}}
+	}
 	
