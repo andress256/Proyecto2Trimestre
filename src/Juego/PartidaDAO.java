@@ -20,7 +20,7 @@ import Clases.MagoOscuro;
 import Clases.Sacerdote;
 import Personajes.Personaje;
 
-public class PartidasDAO {
+public class PartidaDAO {
 
 	public static class DatosPartida {
 		public int idPartida;

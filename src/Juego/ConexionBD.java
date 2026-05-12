@@ -7,7 +7,7 @@ import java.sql.SQLException;
 // Clase utilitaria que devuelve una conexion a la BD MySQL.
 public class ConexionBD {
 
-	private static final String URL      = "jdbc:mysql://localhost:3306/proyectorpg";
+	private static final String URL      = "jdbc:mysql://localhost:3306/ProyectoRPG";
 	private static final String USUARIO  = "root";
 	private static final String PASSWORD = "";
 
