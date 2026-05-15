@@ -19,7 +19,7 @@ public abstract class Personaje {
 
 	protected int vidaMax;
 	protected int vidaActual;
-	protected int recursoMax; // mana, energia, etc.
+	protected int recursoMax;
 	protected int recursoActual;
 
 	protected int ataqueBase;
@@ -27,21 +27,21 @@ public abstract class Personaje {
 	protected int defensaBase;
 
 	protected Arma arma;
-	protected List<Estado> estadosActivos; // estados activos en este momento (veneno, quemadura...)
-	protected List<Hechizo> hechizos; // hechizos disponibles del personaje
-	protected Map<String, Integer> cooldowns; // hechizos en recarga: nombre -> turnos restantes
+	protected List<Estado> estadosActivos;
+	protected List<Hechizo> hechizos;
+	protected Map<String, Integer> cooldowns;
 
-	protected int barraAturdimiento; // se llena al recibir daño
-	protected int maxBarraAturdimiento; // cuando se llena, el personaje queda aturdido
+	protected int barraAturdimiento;
+	protected int maxBarraAturdimiento;
 
 	public Personaje(String nombre, TipoClase tipoClase, int vidaMax, int recursoMax, int ataqueBase, int poderMagico,
 			int defensaBase, int maxBarraAturdimiento) {
 		this.nombre = nombre;
 		this.tipoClase = tipoClase;
 		this.vidaMax = vidaMax;
-		this.vidaActual = vidaMax; // empieza con vida al maximo
+		this.vidaActual = vidaMax;
 		this.recursoMax = recursoMax;
-		this.recursoActual = recursoMax; // empieza con recurso al maximo
+		this.recursoActual = recursoMax;
 		this.ataqueBase = ataqueBase;
 		this.poderMagico = poderMagico;
 		this.defensaBase = defensaBase;
@@ -52,16 +52,13 @@ public abstract class Personaje {
 		this.cooldowns = new HashMap<>();
 	}
 
-	// Devuelve true si el personaje sigue con vida
 	public boolean estaVivo() {
 		return vidaActual > 0;
 	}
 
-	// Comprueba si tiene el estado Aturdido activo
 	public boolean estaAturdido() {
 		for (Estado e : estadosActivos) {
-			if (e instanceof Aturdido)
-				return true;
+			if (e instanceof Aturdido) return true;
 		}
 		return false;
 	}
@@ -76,7 +73,7 @@ public abstract class Personaje {
 		}
 	}
 
-	// Daño puro: ignora la defensa (usado por magias y estados como veneno)
+	// Daño puro: ignora la defensa
 	public void recibirDañoPuro(int cantidad) {
 		vidaActual = Math.max(0, vidaActual - cantidad);
 		if (!estaVivo()) {
@@ -84,12 +81,10 @@ public abstract class Personaje {
 		}
 	}
 
-	// Recupera vida sin superar el maximo
 	public void curar(int cantidad) {
 		vidaActual = Math.min(vidaMax, vidaActual + cantidad);
 	}
 
-	// Gasta recurso si hay suficiente. Devuelve false si no puede
 	public boolean gastarRecurso(int coste) {
 		if (recursoActual >= coste) {
 			recursoActual -= coste;
@@ -115,18 +110,15 @@ public abstract class Personaje {
 		estado.alAplicar(this);
 	}
 
-	// Procesa todos los estados activos al final de cada ronda.
-	// Usa una copia de la lista para evitar errores si un estado mata al personaje.
+	// Procesa todos los estados activos al final de cada ronda
 	public void procesarEstados() {
-		if (!estaVivo() || estadosActivos.isEmpty())
-			return;
+		if (!estaVivo() || estadosActivos.isEmpty()) return;
 
 		List<Estado> copia = new ArrayList<>(estadosActivos);
 		List<Estado> aEliminar = new ArrayList<>();
 
 		for (Estado e : copia) {
-			if (!estaVivo())
-				break;
+			if (!estaVivo()) break;
 			e.alProcesarTurno(this);
 			e.reducirDuracion();
 			if (e.getTurnosRestantes() <= 0) {
@@ -136,29 +128,21 @@ public abstract class Personaje {
 		}
 		estadosActivos.removeAll(aEliminar);
 
-		if (!estaVivo()) {
-			estadosActivos.clear();
-		}
+		if (!estaVivo()) estadosActivos.clear();
 	}
 
-	// Reduce en 1 el cooldown de todos los hechizos al final de cada ronda
 	public void reducirCooldowns() {
 		List<String> aEliminar = new ArrayList<>();
 		for (String nom : cooldowns.keySet()) {
 			int valor = cooldowns.get(nom) - 1;
-			if (valor <= 0)
-				aEliminar.add(nom);
-			else
-				cooldowns.put(nom, valor);
+			if (valor <= 0) aEliminar.add(nom);
+			else cooldowns.put(nom, valor);
 		}
-		for (String nom : aEliminar)
-			cooldowns.remove(nom);
+		for (String nom : aEliminar) cooldowns.remove(nom);
 	}
 
-	// Incrementa la barra de aturdimiento. Si se llena, aplica el estado Aturdido
 	private void incrementarBarraAturdimiento(int cantidad) {
-		if (estaAturdido())
-			return;
+		if (estaAturdido()) return;
 		barraAturdimiento += cantidad;
 		if (barraAturdimiento >= maxBarraAturdimiento) {
 			barraAturdimiento = 0;
@@ -166,32 +150,27 @@ public abstract class Personaje {
 		}
 	}
 
-	// Calcula el daño del ataque basico usando el arma equipada
 	public int calcularDañoBasicoContra(Personaje objetivo) {
-		if (arma == null)
-			return Math.max(1, ataqueBase - objetivo.defensaBase);
+		if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
 		return arma.calcularDaño(this, objetivo);
 	}
 
-	// Realiza un ataque fisico contra otro personaje
 	public void atacarCon(Personaje objetivo) {
 		int daño = calcularDañoBasicoContra(objetivo);
 		System.out.printf("  %-16s ataca a %-16s -> %d dmg%n", nombre, objetivo.getNombre(), daño);
 		objetivo.recibirDaño(daño);
 	}
 
-	// Cada subclase define su propia logica de combate (IA)
 	public abstract void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos);
 
-	// Devuelve una linea con el estado actual del personaje para mostrar en combate
 	public String resumenCombate() {
-		// Barra de aturdimiento visual [==== ]
-		int barras = maxBarraAturdimiento > 0 ? (int) ((double) barraAturdimiento / maxBarraAturdimiento * 8) : 0;
+		int barras = maxBarraAturdimiento > 0
+				? (int) ((double) barraAturdimiento / maxBarraAturdimiento * 8) : 0;
 		String barra = "[" + "=".repeat(barras) + " ".repeat(8 - barras) + "]";
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(" %18s %16s  HP:%3d/%-3d  MP:%3d/%-3d  %s", nombre, "[" + tipoClase + "]", vidaActual,
-				vidaMax, recursoActual, recursoMax, barra));
+		sb.append(String.format(" %18s %16s  HP:%3d/%-3d  MP:%3d/%-3d  %s",
+				nombre, "[" + tipoClase + "]", vidaActual, vidaMax, recursoActual, recursoMax, barra));
 
 		if (!estadosActivos.isEmpty()) {
 			sb.append("  (");
@@ -204,68 +183,24 @@ public abstract class Personaje {
 	}
 
 	// Getters
-	public String getNombre() {
-		return nombre;
-	}
+	public String getNombre()             { return nombre; }
+	public TipoClase getTipoClase()       { return tipoClase; }
+	public int getVidaActual()            { return vidaActual; }
+	public int getVidaMax()               { return vidaMax; }
+	public int getAtaqueBase()            { return ataqueBase; }
+	public int getPoderMagico()           { return poderMagico; }
+	public int getDefensaBase()           { return defensaBase; }
+	public int getRecursoActual()         { return recursoActual; }
+	public int getRecursoMax()            { return recursoMax; }
+	public int getBarraAturdimiento()     { return barraAturdimiento; }
+	public Arma getArma()                 { return arma; }
+	public List<Hechizo> getHechizos()    { return hechizos; }
+	public Map<String, Integer> getCooldowns() { return cooldowns; }
+	// Necesario para los tests de estados
+	public List<Estado> getEstadosActivos() { return estadosActivos; }
 
-	public TipoClase getTipoClase() {
-		return tipoClase;
-	}
-
-	public int getVidaActual() {
-		return vidaActual;
-	}
-
-	public int getVidaMax() {
-		return vidaMax;
-	}
-
-	public int getAtaqueBase() {
-		return ataqueBase;
-	}
-
-	public int getPoderMagico() {
-		return poderMagico;
-	}
-
-	public int getDefensaBase() {
-		return defensaBase;
-	}
-
-	public int getRecursoActual() {
-		return recursoActual;
-	}
-
-	public int getRecursoMax() {
-		return recursoMax;
-	}
-
-	public int getBarraAturdimiento() {
-		return barraAturdimiento;
-	}
-
-	public Arma getArma() {
-		return arma;
-	}
-
-	public List<Hechizo> getHechizos() {
-		return hechizos;
-	}
-
-	public Map<String, Integer> getCooldowns() {
-		return cooldowns;
-	}
-
-	// Setters necesarios para cargar partidas desde la BD
-	public void setVidaActual(int v) {
-		this.vidaActual = Math.max(0, Math.min(vidaMax, v));
-	}
-
-	public void setRecursoActual(int v) {
-		this.recursoActual = Math.max(0, Math.min(recursoMax, v));
-	}
-
-	public void setBarraAturdimiento(int v) {
-		this.barraAturdimiento = Math.max(0, v);
-	}
+	// Setters para cargar partidas desde la BD
+	public void setVidaActual(int v)          { this.vidaActual = Math.max(0, Math.min(vidaMax, v)); }
+	public void setRecursoActual(int v)       { this.recursoActual = Math.max(0, Math.min(recursoMax, v)); }
+	public void setBarraAturdimiento(int v)   { this.barraAturdimiento = Math.max(0, v); }
 }
