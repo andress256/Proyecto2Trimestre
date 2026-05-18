@@ -161,6 +161,17 @@ public abstract class Personaje {
 		objetivo.recibirDaño(daño);
 	}
 
+	// Aplica los multiplicadores de dificultad al personaje.
+	// Se llama una vez al crear la partida, antes de que empiece el combate.
+	// multVida escala vidaMax, multRecurso escala recursoMax, multAtaque escala ataqueBase.
+	public void escalarConDificultad(double multVida, double multRecurso, double multAtaque) {
+		this.vidaMax       = Math.max(1, (int)(this.vidaMax * multVida));
+		this.vidaActual    = this.vidaMax;
+		this.recursoMax    = Math.max(0, (int)(this.recursoMax * multRecurso));
+		this.recursoActual = this.recursoMax;
+		this.ataqueBase    = Math.max(1, (int)(this.ataqueBase * multAtaque));
+	}
+
 	public abstract void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos);
 
 	public String resumenCombate() {
@@ -183,24 +194,23 @@ public abstract class Personaje {
 	}
 
 	// Getters
-	public String getNombre()             { return nombre; }
-	public TipoClase getTipoClase()       { return tipoClase; }
-	public int getVidaActual()            { return vidaActual; }
-	public int getVidaMax()               { return vidaMax; }
-	public int getAtaqueBase()            { return ataqueBase; }
-	public int getPoderMagico()           { return poderMagico; }
-	public int getDefensaBase()           { return defensaBase; }
-	public int getRecursoActual()         { return recursoActual; }
-	public int getRecursoMax()            { return recursoMax; }
-	public int getBarraAturdimiento()     { return barraAturdimiento; }
-	public Arma getArma()                 { return arma; }
-	public List<Hechizo> getHechizos()    { return hechizos; }
+	public String getNombre()                  { return nombre; }
+	public TipoClase getTipoClase()            { return tipoClase; }
+	public int getVidaActual()                 { return vidaActual; }
+	public int getVidaMax()                    { return vidaMax; }
+	public int getAtaqueBase()                 { return ataqueBase; }
+	public int getPoderMagico()                { return poderMagico; }
+	public int getDefensaBase()                { return defensaBase; }
+	public int getRecursoActual()              { return recursoActual; }
+	public int getRecursoMax()                 { return recursoMax; }
+	public int getBarraAturdimiento()          { return barraAturdimiento; }
+	public Arma getArma()                      { return arma; }
+	public List<Hechizo> getHechizos()         { return hechizos; }
 	public Map<String, Integer> getCooldowns() { return cooldowns; }
-	// Necesario para los tests de estados
-	public List<Estado> getEstadosActivos() { return estadosActivos; }
+	public List<Estado> getEstadosActivos()    { return estadosActivos; }
 
 	// Setters para cargar partidas desde la BD
-	public void setVidaActual(int v)          { this.vidaActual = Math.max(0, Math.min(vidaMax, v)); }
-	public void setRecursoActual(int v)       { this.recursoActual = Math.max(0, Math.min(recursoMax, v)); }
-	public void setBarraAturdimiento(int v)   { this.barraAturdimiento = Math.max(0, v); }
+	public void setVidaActual(int v)         { this.vidaActual = Math.max(0, Math.min(vidaMax, v)); }
+	public void setRecursoActual(int v)      { this.recursoActual = Math.max(0, Math.min(recursoMax, v)); }
+	public void setBarraAturdimiento(int v)  { this.barraAturdimiento = Math.max(0, v); }
 }

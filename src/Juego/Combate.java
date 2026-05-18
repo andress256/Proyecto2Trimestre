@@ -5,35 +5,53 @@ import java.sql.SQLException;
 import java.util.List;
 
 // Gestiona el bucle principal de un combate entre dos equipos.
-// El combate es automatico: cada personaje actua segun su IA.
-// Tras cada ronda se guarda automaticamente el estado en BD.
-// Si dao es null (modo test), el guardado se omite.
+// Al terminar verifica y desbloquea logros automaticamente.
+// Si dao es null (modo test), todos los accesos a BD se omiten.
 public class Combate {
 
 	private List<Personaje> equipoHeroes;
 	private List<Personaje> equipoVillanos;
 	private int ronda;
-	private final PartidaDAO dao;
-	private final int idPartida;
+	private final PartidaDAO   dao;
+	private final HistorialDAO historialDAO;
+	private final LogroDAO     logroDAO;
+	private final int    idPartida;
+	private final String nombreJugador;
+	private final String dificultad;
 	private static final int PAUSA_MS = 300;
 
-	// Constructor para nueva partida
+	// Constructor simplificado para tests (sin BD, sin nombre, sin dificultad)
 	public Combate(List<Personaje> equipoHeroes, List<Personaje> equipoVillanos,
 			PartidaDAO dao, int idPartida) {
-		this(equipoHeroes, equipoVillanos, dao, idPartida, 0);
+		this(equipoHeroes, equipoVillanos, dao, idPartida, 0, "", "");
 	}
 
-	// Constructor para cargar partida desde una ronda concreta
+	// Constructor para cargar partida desde una ronda concreta (sin nombre/dificultad)
 	public Combate(List<Personaje> equipoHeroes, List<Personaje> equipoVillanos,
 			PartidaDAO dao, int idPartida, int rondaInicial) {
-		this.equipoHeroes = equipoHeroes;
+		this(equipoHeroes, equipoVillanos, dao, idPartida, rondaInicial, "", "");
+	}
+
+	// Constructor completo: incluye nombre del jugador y dificultad para logros
+	public Combate(List<Personaje> equipoHeroes, List<Personaje> equipoVillanos,
+			PartidaDAO dao, int idPartida, int rondaInicial,
+			String nombreJugador, String dificultad) {
+		this.equipoHeroes   = equipoHeroes;
 		this.equipoVillanos = equipoVillanos;
-		this.dao = dao;
-		this.idPartida = idPartida;
-		this.ronda = rondaInicial;
+		this.dao            = dao;
+		this.idPartida      = idPartida;
+		this.ronda          = rondaInicial;
+		this.nombreJugador  = nombreJugador;
+		this.dificultad     = dificultad;
+		// Si no hay dao (modo test), tampoco se usa historial ni logros
+		this.historialDAO   = (dao != null) ? new HistorialDAO() : null;
+		this.logroDAO       = (dao != null) ? new LogroDAO()     : null;
 	}
 
 	public void iniciar() {
+		registrarEvento("INICIO", "Heroes: " + resumirEquipo(equipoHeroes)
+				+ " | Villanos: " + resumirEquipo(equipoVillanos));
+
 		while (!combateTerminado()) {
 			ronda++;
 			System.out.println("\n--- Ronda " + ronda + " ---");
@@ -70,13 +88,16 @@ public class Combate {
 			for (Personaje p : equipoHeroes)   p.reducirCooldowns();
 			for (Personaje p : equipoVillanos) p.reducirCooldowns();
 
+			registrarEvento("RONDA", "Heroes: " + resumirEquipoVivos(equipoHeroes)
+					+ " | Villanos: " + resumirEquipoVivos(equipoVillanos));
+
 			guardarAutomatico();
 		}
 
+		marcarResultadoFinal();
 		mostrarResumenFinal();
 	}
 
-	// Guarda el estado en BD. Si dao es null (modo test), no hace nada.
 	private void guardarAutomatico() {
 		if (dao == null) return;
 		try {
@@ -85,6 +106,61 @@ public class Combate {
 		} catch (SQLException e) {
 			System.err.println("  [Error al guardar la partida] " + e.getMessage());
 		}
+	}
+
+	// Marca resultado, registra evento FIN y verifica logros
+	private void marcarResultadoFinal() {
+		if (dao == null) return;
+		try {
+			boolean heroesGanan = !todosDerrota(equipoHeroes);
+			String resultado = heroesGanan ? "VICTORIA" : "DERROTA";
+			dao.marcarResultado(idPartida, resultado);
+			System.out.println("  [Resultado registrado en BD: " + resultado + "]");
+
+			String supervivientes = heroesGanan
+					? resumirEquipoVivos(equipoHeroes)
+					: resumirEquipoVivos(equipoVillanos);
+			registrarEvento("FIN", resultado + " en ronda " + ronda
+					+ ". Supervivientes: " + supervivientes);
+
+			// Verificar y desbloquear logros automaticamente
+			if (logroDAO != null && !nombreJugador.isEmpty()) {
+				int heroesVivos = (int) equipoHeroes.stream().filter(Personaje::estaVivo).count();
+				logroDAO.verificarYDesbloquearLogros(nombreJugador, heroesGanan, dificultad, ronda, heroesVivos);
+			}
+		} catch (SQLException e) {
+			System.err.println("  [Error al marcar resultado] " + e.getMessage());
+		}
+	}
+
+	private void registrarEvento(String tipo, String descripcion) {
+		if (historialDAO == null) return;
+		try {
+			historialDAO.registrarEvento(idPartida, ronda, tipo, descripcion);
+		} catch (SQLException e) {
+			System.err.println("  [Error al registrar historial] " + e.getMessage());
+		}
+	}
+
+	private String resumirEquipo(List<Personaje> equipo) {
+		StringBuilder sb = new StringBuilder();
+		for (Personaje p : equipo) {
+			if (sb.length() > 0) sb.append(", ");
+			sb.append(p.getNombre()).append(" (").append(p.getVidaMax()).append("HP)");
+		}
+		return sb.toString();
+	}
+
+	private String resumirEquipoVivos(List<Personaje> equipo) {
+		StringBuilder sb = new StringBuilder();
+		for (Personaje p : equipo) {
+			if (sb.length() > 0) sb.append(", ");
+			if (p.estaVivo())
+				sb.append(p.getNombre()).append(" (").append(p.getVidaActual()).append("HP)");
+			else
+				sb.append(p.getNombre()).append(" [CAIDO]");
+		}
+		return sb.toString();
 	}
 
 	private boolean todosDerrota(List<Personaje> equipo) {
