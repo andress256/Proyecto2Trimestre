@@ -6,7 +6,6 @@ import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.style.Styler;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,11 +13,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-// Genera graficos estadisticos del juego usando XChart.
-// Cada metodo consulta la BD, construye el grafico y lo muestra en una ventana.
 public class GraficosEstadisticas {
 
-	// Grafico de barras: victorias y derrotas de cada jugador
 	public static void graficoVictoriasPorJugador() throws SQLException {
 		String sql = "SELECT nombre_jugador, "
 				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
@@ -59,7 +55,6 @@ public class GraficosEstadisticas {
 		new SwingWrapper<>(chart).displayChart();
 	}
 
-	// Grafico de sectores: porcentaje global de victorias y derrotas
 	public static void graficoResultadosGlobales() throws SQLException {
 		String sql = "SELECT resultado, COUNT(*) AS total FROM partida "
 				+ "WHERE resultado != 'EN_CURSO' GROUP BY resultado";
@@ -95,14 +90,13 @@ public class GraficosEstadisticas {
 		new SwingWrapper<>(chart).displayChart();
 	}
 
-	// Grafico de barras: victorias y derrotas segun la dificultad elegida
 	public static void graficoResultadosPorDificultad() throws SQLException {
-		String sql = "SELECT nombre, "
+		String sql = "SELECT nombre_dificultad, "
 				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
 				+ "SUM(CASE WHEN resultado = 'DERROTA'  THEN 1 ELSE 0 END) AS derrotas "
 				+ "FROM partida WHERE resultado != 'EN_CURSO' "
-				+ "GROUP BY nombre "
-				+ "ORDER BY CASE nombre "
+				+ "GROUP BY nombre_dificultad "
+				+ "ORDER BY CASE nombre_dificultad "
 				+ "  WHEN 'FACIL' THEN 1 WHEN 'NORMAL' THEN 2 WHEN 'DIFICIL' THEN 3 ELSE 4 END";
 
 		List<String>  dificultades = new ArrayList<>();
