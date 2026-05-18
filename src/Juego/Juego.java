@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 // Clase principal del juego. Menu interactivo con CRUD, ranking,
-// historial, dificultad configurable y sistema de logros.
+// historial, dificultad configurable, logros y graficos estadisticos.
 public class Juego {
 
 	private final Scanner       sc            = new Scanner(System.in);
@@ -34,7 +34,8 @@ public class Juego {
 				case 5 -> mostrarRanking();
 				case 6 -> mostrarHistorial();
 				case 7 -> mostrarLogros();
-				case 8 -> salir = true;
+				case 8 -> mostrarGraficos();
+				case 9 -> salir = true;
 				default -> System.out.println(" Opcion no valida.");
 			}
 		}
@@ -52,7 +53,8 @@ public class Juego {
 		System.out.println(" 5. Ver ranking");
 		System.out.println(" 6. Ver historial de partida");
 		System.out.println(" 7. Ver mis logros");
-		System.out.println(" 8. Salir");
+		System.out.println(" 8. Ver estadisticas (graficos)");
+		System.out.println(" 9. Salir");
 		System.out.print(" Opcion: ");
 	}
 
@@ -81,7 +83,6 @@ public class Juego {
 			System.out.println(" Villanos: " + nombres(villanos));
 			pausar(1000);
 
-			// Pasa nombre y dificultad para que Combate pueda verificar logros al terminar
 			new Combate(heroes, villanos, dao, idPartida, 0, nombre, dificultad.nombre).iniciar();
 		} catch (SQLException e) {
 			System.err.println(" Error al crear la partida: " + e.getMessage());
@@ -130,7 +131,6 @@ public class Juego {
 				System.out.println(" No existe ninguna partida con ID " + id + ".");
 				return;
 			}
-
 			PartidaDAO.DatosPartida datos = dao.cargarPartida(id);
 			System.out.println("\n Cargando partida de " + datos.nombreJugador
 					+ " (Ronda " + datos.rondaActual + " - " + datos.nombreDificultad + ")");
@@ -138,7 +138,6 @@ public class Juego {
 			System.out.println(" Villanos: " + nombres(datos.villanos));
 			pausar(1000);
 
-			// Pasa nombre y dificultad para que los logros se verifiquen al terminar
 			new Combate(datos.heroes, datos.villanos, dao, datos.idPartida,
 					datos.rondaActual, datos.nombreJugador, datos.nombreDificultad).iniciar();
 		} catch (SQLException e) {
@@ -193,7 +192,7 @@ public class Juego {
 		}
 	}
 
-	// Opcion 6: historial de una partida concreta
+	// Opcion 6: historial de una partida
 	private void mostrarHistorial() {
 		System.out.print(" ID de la partida: ");
 		int id = leerEntero();
@@ -219,17 +218,16 @@ public class Juego {
 		}
 	}
 
-	// Opcion 7: logros desbloqueados y pendientes de un jugador
+	// Opcion 7: logros de un jugador
 	private void mostrarLogros() {
 		System.out.print(" Nombre del jugador: ");
 		String nombre = sc.nextLine().trim();
 		if (nombre.isEmpty()) { System.out.println(" El nombre no puede estar vacio."); return; }
 
 		try {
-			List<LogroDAO.Logro>             todos        = logroDAO.obtenerTodosLosLogros();
+			List<LogroDAO.Logro>             todos         = logroDAO.obtenerTodosLosLogros();
 			List<LogroDAO.LogroDesbloqueado> desbloqueados = logroDAO.obtenerLogrosJugador(nombre);
 
-			// Nombres de los logros ya obtenidos (para comparar rapidamente)
 			List<String> nombresObtenidos = new ArrayList<>();
 			for (LogroDAO.LogroDesbloqueado ld : desbloqueados) nombresObtenidos.add(ld.nombre);
 
@@ -240,27 +238,54 @@ public class Juego {
 			} else {
 				System.out.println(" Desbloqueados (" + desbloqueados.size() + "/" + todos.size() + "):");
 				for (LogroDAO.LogroDesbloqueado ld : desbloqueados) {
-					System.out.printf("  [✓] %-20s - %s  (%s)%n",
+					System.out.printf("  [v] %-20s - %s  (%s)%n",
 							ld.nombre, ld.descripcion, ld.fechaDesbloqueo.substring(0, 16));
 				}
 			}
 
-			// Mostrar los logros pendientes
 			List<LogroDAO.Logro> pendientes = new ArrayList<>();
 			for (LogroDAO.Logro l : todos) {
 				if (!nombresObtenidos.contains(l.nombre)) pendientes.add(l);
 			}
-
 			if (!pendientes.isEmpty()) {
 				System.out.println(" Pendientes:");
 				for (LogroDAO.Logro l : pendientes) {
 					System.out.printf("  [ ] %-20s - %s%n", l.nombre, l.descripcion);
 				}
 			}
-
 			System.out.println(" ================================================");
 		} catch (SQLException e) {
 			System.err.println(" Error al obtener los logros: " + e.getMessage());
+		}
+	}
+
+	// Opcion 8: submenú de gráficos estadísticos con XChart
+	private void mostrarGraficos() {
+		boolean volver = false;
+		while (!volver) {
+			System.out.println("\n--- GRAFICOS DE ESTADISTICAS ---");
+			System.out.println(" 1. Victorias y derrotas por jugador (barras)");
+			System.out.println(" 2. Resultados globales (sectores)");
+			System.out.println(" 3. Resultados por dificultad (barras)");
+			System.out.println(" 4. Volver al menu principal");
+			System.out.print(" Opcion: ");
+
+			switch (leerEntero()) {
+				case 1 -> {
+					try { GraficosEstadisticas.graficoVictoriasPorJugador(); }
+					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
+				}
+				case 2 -> {
+					try { GraficosEstadisticas.graficoResultadosGlobales(); }
+					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
+				}
+				case 3 -> {
+					try { GraficosEstadisticas.graficoResultadosPorDificultad(); }
+					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
+				}
+				case 4 -> volver = true;
+				default -> System.out.println(" Opcion no valida.");
+			}
 		}
 	}
 
