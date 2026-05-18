@@ -97,12 +97,12 @@ public class GraficosEstadisticas {
 
 	// Grafico de barras: victorias y derrotas segun la dificultad elegida
 	public static void graficoResultadosPorDificultad() throws SQLException {
-		String sql = "SELECT nombre_dificultad, "
+		String sql = "SELECT nombre, "
 				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
 				+ "SUM(CASE WHEN resultado = 'DERROTA'  THEN 1 ELSE 0 END) AS derrotas "
 				+ "FROM partida WHERE resultado != 'EN_CURSO' "
-				+ "GROUP BY nombre_dificultad "
-				+ "ORDER BY CASE nombre_dificultad "
+				+ "GROUP BY nombre "
+				+ "ORDER BY CASE nombre "
 				+ "  WHEN 'FACIL' THEN 1 WHEN 'NORMAL' THEN 2 WHEN 'DIFICIL' THEN 3 ELSE 4 END";
 
 		List<String>  dificultades = new ArrayList<>();
