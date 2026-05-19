@@ -3,7 +3,6 @@ package Juego;
 import Personajes.catalogoPersonajes;
 import Personajes.Personaje;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,7 +12,6 @@ public class Juego {
 	private final PartidaDAO    dao           = new PartidaDAO();
 	private final DificultadDAO dificultadDAO = new DificultadDAO();
 	private final HistorialDAO  historialDAO  = new HistorialDAO();
-	private final LogroDAO      logroDAO      = new LogroDAO();
 
 	public void iniciar() {
 		System.out.println("=================================================");
@@ -31,9 +29,8 @@ public class Juego {
 				case 4 -> borrarPartida();
 				case 5 -> mostrarRanking();
 				case 6 -> mostrarHistorial();
-				case 7 -> mostrarLogros();
-				case 8 -> mostrarGraficos();
-				case 9 -> salir = true;
+				case 7 -> mostrarGraficos();
+				case 8 -> salir = true;
 				default -> System.out.println(" Opcion no valida.");
 			}
 		}
@@ -50,9 +47,8 @@ public class Juego {
 		System.out.println(" 4. Borrar partida");
 		System.out.println(" 5. Ver ranking");
 		System.out.println(" 6. Ver historial de partida");
-		System.out.println(" 7. Ver mis logros");
-		System.out.println(" 8. Ver graficos");
-		System.out.println(" 9. Salir");
+		System.out.println(" 7. Ver estadisticas (graficos)");
+		System.out.println(" 8. Salir");
 		System.out.print(" Opcion: ");
 	}
 
@@ -80,7 +76,7 @@ public class Juego {
 			System.out.println(" Villanos: " + nombres(villanos));
 			pausar(1000);
 
-			new Combate(heroes, villanos, dao, idPartida, 0, nombre, dificultad.nombre).iniciar();
+			new Combate(heroes, villanos, dao, idPartida).iniciar();
 		} catch (SQLException e) {
 			System.err.println(" Error al crear la partida: " + e.getMessage());
 		}
@@ -133,8 +129,7 @@ public class Juego {
 			System.out.println(" Villanos: " + nombres(datos.villanos));
 			pausar(1000);
 
-			new Combate(datos.heroes, datos.villanos, dao, datos.idPartida,
-					datos.rondaActual, datos.nombreJugador, datos.nombreDificultad).iniciar();
+			new Combate(datos.heroes, datos.villanos, dao, datos.idPartida, datos.rondaActual).iniciar();
 		} catch (SQLException e) {
 			System.err.println(" Error al cargar la partida: " + e.getMessage());
 		}
@@ -207,46 +202,6 @@ public class Juego {
 			System.out.println(" -------------------------------------------");
 		} catch (SQLException e) {
 			System.err.println(" Error al obtener el historial: " + e.getMessage());
-		}
-	}
-
-	private void mostrarLogros() {
-		System.out.print(" Nombre del jugador: ");
-		String nombre = sc.nextLine().trim();
-		if (nombre.isEmpty()) { System.out.println(" El nombre no puede estar vacio."); return; }
-
-		try {
-			List<LogroDAO.Logro>             todos         = logroDAO.obtenerTodosLosLogros();
-			List<LogroDAO.LogroDesbloqueado> desbloqueados = logroDAO.obtenerLogrosJugador(nombre);
-
-			List<String> nombresObtenidos = new ArrayList<>();
-			for (LogroDAO.LogroDesbloqueado ld : desbloqueados) nombresObtenidos.add(ld.nombre);
-
-			System.out.println("\n=========== LOGROS DE " + nombre.toUpperCase() + " ===========");
-
-			if (desbloqueados.isEmpty()) {
-				System.out.println(" Todavia no has desbloqueado ningun logro.");
-			} else {
-				System.out.println(" Desbloqueados (" + desbloqueados.size() + "/" + todos.size() + "):");
-				for (LogroDAO.LogroDesbloqueado ld : desbloqueados) {
-					System.out.printf("  [v] %-20s - %s  (%s)%n",
-							ld.nombre, ld.descripcion, ld.fechaDesbloqueo.substring(0, 16));
-				}
-			}
-
-			List<LogroDAO.Logro> pendientes = new ArrayList<>();
-			for (LogroDAO.Logro l : todos) {
-				if (!nombresObtenidos.contains(l.nombre)) pendientes.add(l);
-			}
-			if (!pendientes.isEmpty()) {
-				System.out.println(" Pendientes:");
-				for (LogroDAO.Logro l : pendientes) {
-					System.out.printf("  [ ] %-20s - %s%n", l.nombre, l.descripcion);
-				}
-			}
-			System.out.println(" ================================================");
-		} catch (SQLException e) {
-			System.err.println(" Error al obtener los logros: " + e.getMessage());
 		}
 	}
 
