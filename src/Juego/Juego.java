@@ -51,7 +51,7 @@ public class Juego {
 		System.out.println(" 5. Ver ranking");
 		System.out.println(" 6. Ver historial de partida");
 		System.out.println(" 7. Ver mis logros");
-		System.out.println(" 8. Ver estadisticas (graficos)");
+		System.out.println(" 8. Ver graficos");
 		System.out.println(" 9. Salir");
 		System.out.print(" Opcion: ");
 	}
