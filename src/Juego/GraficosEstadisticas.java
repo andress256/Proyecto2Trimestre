@@ -2,144 +2,97 @@ package Juego;
 
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.PieChart;
-import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.style.Styler;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Genera gráficos estadísticos del juego usando XChart.
+ * Los datos de armas y personajes se toman directamente del código Java (sin BD).
+ * 
+ * @author Equipo DAM
+ * @version 1.0
+ */
 public class GraficosEstadisticas {
 
-	// Grafico 1: victorias y derrotas por jugador
-	public static void graficoVictoriasPorJugador() throws SQLException {
-		String sql = "SELECT nombre_jugador, "
-				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
-				+ "SUM(CASE WHEN resultado = 'DERROTA'  THEN 1 ELSE 0 END) AS derrotas "
-				+ "FROM partida WHERE resultado != 'EN_CURSO' "
-				+ "GROUP BY nombre_jugador ORDER BY victorias DESC";
-
-		List<String>  jugadores = new ArrayList<>();
-		List<Integer> victorias = new ArrayList<>();
-		List<Integer> derrotas  = new ArrayList<>();
-
-		try (Connection conn = ConexionBD.getConexion();
-				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(sql)) {
-			while (rs.next()) {
-				jugadores.add(rs.getString("nombre_jugador"));
-				victorias.add(rs.getInt("victorias"));
-				derrotas.add(rs.getInt("derrotas"));
-			}
-		}
-
-		if (jugadores.isEmpty()) {
-			System.out.println(" No hay datos suficientes para mostrar el grafico.");
-			return;
-		}
+	/**
+	 * Muestra un gráfico de barras con el daño base de todas las armas del juego,
+	 * ordenadas de menor a mayor daño.
+	 */
+	public static void graficoDanoArmas() {
+		// Armas ordenadas de menor a mayor daño base (datos de CatalogoArmas)
+		List<String>  nombres = Arrays.asList(
+				"Varita Monoco",
+				"Baston Lune",
+				"Arco Sciel",
+				"Cetro Pintora",
+				"Garras Esquie",
+				"Estoque Maelle",
+				"Arco Expedicion",
+				"Cuchillas Verso",
+				"Rifle Cromatico",
+				"Hoja Olvido",
+				"Espadon Gustave",
+				"Ballesta Abismo",
+				"Martillo Cromatico",
+				"Hacha Monolito",
+				"Gran Maza Renoir"
+		);
+		List<Integer> danos = Arrays.asList(
+				11, 13, 15, 16, 15, 17, 18, 18, 20, 20, 22, 24, 28, 32, 38
+		);
 
 		CategoryChart chart = new CategoryChartBuilder()
-				.width(700).height(450)
-				.title("Victorias y Derrotas por Jugador")
-				.xAxisTitle("Jugador")
-				.yAxisTitle("Partidas")
+				.width(950).height(500)
+				.title("Daño Base de las Armas")
+				.xAxisTitle("Arma")
+				.yAxisTitle("Daño Base")
 				.theme(Styler.ChartTheme.Matlab)
 				.build();
 
-		chart.getStyler().setPlotGridLinesVisible(true);
 		chart.getStyler().setAvailableSpaceFill(0.5);
+		chart.getStyler().setPlotGridLinesVisible(true);
 
-		chart.addSeries("Victorias", jugadores, victorias);
-		chart.addSeries("Derrotas",  jugadores, derrotas);
+		chart.addSeries("Daño base", nombres, danos);
 
 		new SwingWrapper<>(chart).displayChart();
 	}
 
-	// Grafico 2: duracion media de combate por jugador (en rondas)
-	public static void graficoDuracionMedia() throws SQLException {
-		String sql = "SELECT nombre_jugador, AVG(ronda_actual) AS promedio "
-				+ "FROM partida WHERE resultado != 'EN_CURSO' "
-				+ "GROUP BY nombre_jugador ORDER BY promedio DESC";
-
-		List<String> jugadores = new ArrayList<>();
-		List<Double>  promedios = new ArrayList<>();
-
-		try (Connection conn = ConexionBD.getConexion();
-				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(sql)) {
-			while (rs.next()) {
-				jugadores.add(rs.getString("nombre_jugador"));
-				promedios.add(rs.getDouble("promedio"));
-			}
-		}
-
-		if (jugadores.isEmpty()) {
-			System.out.println(" No hay datos suficientes para mostrar el grafico.");
-			return;
-		}
+	/**
+	 * Muestra un gráfico de barras con la vida máxima de todas las clases
+	 * de personajes del juego, ordenadas de menor a mayor vida.
+	 */
+	public static void graficoVidaPersonajes() {
+		// Personajes ordenados de menor a mayor vida máxima (datos de cada clase)
+		List<String>  clases = Arrays.asList(
+				"Mago",
+				"Ilusionista",
+				"Sacerdote",
+				"Guardian Pintado",
+				"Duelista",
+				"Explorador",
+				"Bruto Pintado",
+				"Mago Oscuro",
+				"Guerrero",
+				"Caballero Oscuro"
+		);
+		List<Integer> vidas = Arrays.asList(
+				130, 135, 140, 140, 150, 155, 160, 170, 200, 250
+		);
 
 		CategoryChart chart = new CategoryChartBuilder()
-				.width(700).height(450)
-				.title("Duracion Media de Combate por Jugador")
-				.xAxisTitle("Jugador")
-				.yAxisTitle("Rondas (promedio)")
+				.width(800).height(500)
+				.title("Vida Maxima por Clase de Personaje")
+				.xAxisTitle("Clase")
+				.yAxisTitle("Vida Maxima")
 				.theme(Styler.ChartTheme.Matlab)
 				.build();
 
-		chart.getStyler().setPlotGridLinesVisible(true);
-		chart.getStyler().setAvailableSpaceFill(0.4);
-
-		chart.addSeries("Rondas promedio", jugadores, promedios);
-
-		new SwingWrapper<>(chart).displayChart();
-	}
-
-	// Grafico 3: victorias y derrotas segun la dificultad
-	public static void graficoResultadosPorDificultad() throws SQLException {
-		String sql = "SELECT nombre_dificultad, "
-				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
-				+ "SUM(CASE WHEN resultado = 'DERROTA'  THEN 1 ELSE 0 END) AS derrotas "
-				+ "FROM partida WHERE resultado != 'EN_CURSO' "
-				+ "GROUP BY nombre_dificultad "
-				+ "ORDER BY CASE nombre_dificultad "
-				+ "  WHEN 'FACIL' THEN 1 WHEN 'NORMAL' THEN 2 WHEN 'DIFICIL' THEN 3 ELSE 4 END";
-
-		List<String>  dificultades = new ArrayList<>();
-		List<Integer> victorias    = new ArrayList<>();
-		List<Integer> derrotas     = new ArrayList<>();
-
-		try (Connection conn = ConexionBD.getConexion();
-				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(sql)) {
-			while (rs.next()) {
-				dificultades.add(rs.getString("nombre_dificultad"));
-				victorias.add(rs.getInt("victorias"));
-				derrotas.add(rs.getInt("derrotas"));
-			}
-		}
-
-		if (dificultades.isEmpty()) {
-			System.out.println(" No hay datos suficientes para mostrar el grafico.");
-			return;
-		}
-
-		CategoryChart chart = new CategoryChartBuilder()
-				.width(600).height(400)
-				.title("Resultados por Dificultad")
-				.xAxisTitle("Dificultad")
-				.yAxisTitle("Partidas")
-				.theme(Styler.ChartTheme.Matlab)
-				.build();
-
-		chart.getStyler().setPlotGridLinesVisible(true);
 		chart.getStyler().setAvailableSpaceFill(0.5);
+		chart.getStyler().setPlotGridLinesVisible(true);
 
-		chart.addSeries("Victorias", dificultades, victorias);
-		chart.addSeries("Derrotas",  dificultades, derrotas);
+		chart.addSeries("Vida maxima", clases, vidas);
 
 		new SwingWrapper<>(chart).displayChart();
 	}

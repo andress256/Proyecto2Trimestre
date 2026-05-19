@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// Clase principal del juego. Menu interactivo con CRUD, ranking,
-// historial, dificultad configurable, logros y graficos estadisticos.
 public class Juego {
 
 	private final Scanner       sc            = new Scanner(System.in);
@@ -58,7 +56,6 @@ public class Juego {
 		System.out.print(" Opcion: ");
 	}
 
-	// Opcion 1: pide nombre y dificultad, genera equipos y arranca combate
 	private void nuevaPartida() {
 		System.out.print(" Nombre del jugador: ");
 		String nombre = sc.nextLine().trim();
@@ -108,7 +105,6 @@ public class Juego {
 		return lista.get(idx);
 	}
 
-	// Opcion 2: lista todas las partidas
 	private void listarPartidas() {
 		try {
 			List<String> lista = dao.listarPartidas();
@@ -120,7 +116,6 @@ public class Juego {
 		}
 	}
 
-	// Opcion 3: carga una partida y retoma el combate
 	private void cargarPartida() {
 		System.out.print(" ID de la partida a cargar: ");
 		int id = leerEntero();
@@ -145,7 +140,6 @@ public class Juego {
 		}
 	}
 
-	// Opcion 4: borra una partida
 	private void borrarPartida() {
 		System.out.print(" ID de la partida a borrar: ");
 		int id = leerEntero();
@@ -168,7 +162,6 @@ public class Juego {
 		}
 	}
 
-	// Opcion 5: ranking de jugadores
 	private void mostrarRanking() {
 		try {
 			List<PartidaDAO.EntradaRanking> ranking = dao.obtenerRanking();
@@ -192,7 +185,6 @@ public class Juego {
 		}
 	}
 
-	// Opcion 6: historial de una partida
 	private void mostrarHistorial() {
 		System.out.print(" ID de la partida: ");
 		int id = leerEntero();
@@ -218,7 +210,6 @@ public class Juego {
 		}
 	}
 
-	// Opcion 7: logros de un jugador
 	private void mostrarLogros() {
 		System.out.print(" Nombre del jugador: ");
 		String nombre = sc.nextLine().trim();
@@ -259,31 +250,19 @@ public class Juego {
 		}
 	}
 
-	// Opcion 8: submenú de gráficos estadísticos con XChart
 	private void mostrarGraficos() {
 		boolean volver = false;
 		while (!volver) {
 			System.out.println("\n--- GRAFICOS DE ESTADISTICAS ---");
-			System.out.println(" 1. Victorias y derrotas por jugador");
-			System.out.println(" 2. Duracion media de combate por jugador");
-			System.out.println(" 3. Resultados por dificultad");
-			System.out.println(" 4. Volver al menu principal");
+			System.out.println(" 1. Daño base de las armas");
+			System.out.println(" 2. Vida maxima por clase de personaje");
+			System.out.println(" 3. Volver al menu principal");
 			System.out.print(" Opcion: ");
 
 			switch (leerEntero()) {
-				case 1 -> {
-					try { GraficosEstadisticas.graficoVictoriasPorJugador(); }
-					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
-				}
-				case 2 -> {
-					try { GraficosEstadisticas.graficoDuracionMedia(); }
-					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
-				}
-				case 3 -> {
-					try { GraficosEstadisticas.graficoResultadosPorDificultad(); }
-					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
-				}
-				case 4 -> volver = true;
+				case 1 -> GraficosEstadisticas.graficoDanoArmas();
+				case 2 -> GraficosEstadisticas.graficoVidaPersonajes();
+				case 3 -> volver = true;
 				default -> System.out.println(" Opcion no valida.");
 			}
 		}
