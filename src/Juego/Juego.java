@@ -264,9 +264,9 @@ public class Juego {
 		boolean volver = false;
 		while (!volver) {
 			System.out.println("\n--- GRAFICOS DE ESTADISTICAS ---");
-			System.out.println(" 1. Victorias y derrotas por jugador (barras)");
-			System.out.println(" 2. Resultados globales (sectores)");
-			System.out.println(" 3. Resultados por dificultad (barras)");
+			System.out.println(" 1. Victorias y derrotas por jugador");
+			System.out.println(" 2. Duracion media de combate por jugador");
+			System.out.println(" 3. Resultados por dificultad");
 			System.out.println(" 4. Volver al menu principal");
 			System.out.print(" Opcion: ");
 
@@ -276,7 +276,7 @@ public class Juego {
 					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
 				}
 				case 2 -> {
-					try { GraficosEstadisticas.graficoResultadosGlobales(); }
+					try { GraficosEstadisticas.graficoDuracionMedia(); }
 					catch (SQLException e) { System.err.println(" Error: " + e.getMessage()); }
 				}
 				case 3 -> {

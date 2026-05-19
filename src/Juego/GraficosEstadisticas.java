@@ -15,6 +15,7 @@ import java.util.List;
 
 public class GraficosEstadisticas {
 
+	// Grafico 1: victorias y derrotas por jugador
 	public static void graficoVictoriasPorJugador() throws SQLException {
 		String sql = "SELECT nombre_jugador, "
 				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
@@ -46,8 +47,11 @@ public class GraficosEstadisticas {
 				.title("Victorias y Derrotas por Jugador")
 				.xAxisTitle("Jugador")
 				.yAxisTitle("Partidas")
-				.theme(Styler.ChartTheme.GGPlot2)
+				.theme(Styler.ChartTheme.Matlab)
 				.build();
+
+		chart.getStyler().setPlotGridLinesVisible(true);
+		chart.getStyler().setAvailableSpaceFill(0.5);
 
 		chart.addSeries("Victorias", jugadores, victorias);
 		chart.addSeries("Derrotas",  jugadores, derrotas);
@@ -55,41 +59,46 @@ public class GraficosEstadisticas {
 		new SwingWrapper<>(chart).displayChart();
 	}
 
-	public static void graficoResultadosGlobales() throws SQLException {
-		String sql = "SELECT resultado, COUNT(*) AS total FROM partida "
-				+ "WHERE resultado != 'EN_CURSO' GROUP BY resultado";
+	// Grafico 2: duracion media de combate por jugador (en rondas)
+	public static void graficoDuracionMedia() throws SQLException {
+		String sql = "SELECT nombre_jugador, AVG(ronda_actual) AS promedio "
+				+ "FROM partida WHERE resultado != 'EN_CURSO' "
+				+ "GROUP BY nombre_jugador ORDER BY promedio DESC";
 
-		int totalVictorias = 0;
-		int totalDerrotas  = 0;
+		List<String> jugadores = new ArrayList<>();
+		List<Double>  promedios = new ArrayList<>();
 
 		try (Connection conn = ConexionBD.getConexion();
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next()) {
-				if ("VICTORIA".equals(rs.getString("resultado")))
-					totalVictorias = rs.getInt("total");
-				else
-					totalDerrotas  = rs.getInt("total");
+				jugadores.add(rs.getString("nombre_jugador"));
+				promedios.add(rs.getDouble("promedio"));
 			}
 		}
 
-		if (totalVictorias + totalDerrotas == 0) {
+		if (jugadores.isEmpty()) {
 			System.out.println(" No hay datos suficientes para mostrar el grafico.");
 			return;
 		}
 
-		PieChart chart = new PieChartBuilder()
-				.width(500).height(400)
-				.title("Resultados Globales (" + (totalVictorias + totalDerrotas) + " partidas)")
-				.theme(Styler.ChartTheme.GGPlot2)
+		CategoryChart chart = new CategoryChartBuilder()
+				.width(700).height(450)
+				.title("Duracion Media de Combate por Jugador")
+				.xAxisTitle("Jugador")
+				.yAxisTitle("Rondas (promedio)")
+				.theme(Styler.ChartTheme.Matlab)
 				.build();
 
-		chart.addSeries("Victorias (" + totalVictorias + ")", totalVictorias);
-		chart.addSeries("Derrotas ("  + totalDerrotas  + ")", totalDerrotas);
+		chart.getStyler().setPlotGridLinesVisible(true);
+		chart.getStyler().setAvailableSpaceFill(0.4);
+
+		chart.addSeries("Rondas promedio", jugadores, promedios);
 
 		new SwingWrapper<>(chart).displayChart();
 	}
 
+	// Grafico 3: victorias y derrotas segun la dificultad
 	public static void graficoResultadosPorDificultad() throws SQLException {
 		String sql = "SELECT nombre_dificultad, "
 				+ "SUM(CASE WHEN resultado = 'VICTORIA' THEN 1 ELSE 0 END) AS victorias, "
@@ -123,8 +132,11 @@ public class GraficosEstadisticas {
 				.title("Resultados por Dificultad")
 				.xAxisTitle("Dificultad")
 				.yAxisTitle("Partidas")
-				.theme(Styler.ChartTheme.GGPlot2)
+				.theme(Styler.ChartTheme.Matlab)
 				.build();
+
+		chart.getStyler().setPlotGridLinesVisible(true);
+		chart.getStyler().setAvailableSpaceFill(0.5);
 
 		chart.addSeries("Victorias", dificultades, victorias);
 		chart.addSeries("Derrotas",  dificultades, derrotas);
