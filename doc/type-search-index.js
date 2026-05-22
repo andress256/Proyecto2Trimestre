@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"Juego","l":"LogroDAO.Logro"},{"p":"Juego","l":"LogroDAO"},{"p":"Juego","l":"LogroDAO.LogroDesbloqueado"}];updateSearchResults();

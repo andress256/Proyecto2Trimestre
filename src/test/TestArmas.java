@@ -7,7 +7,6 @@ import org.junit.Before;
 import Armas.ArmaCuerpoACuerpo;
 import Armas.ArmaADistancia;
 import Clases.Guerrero;
-import Clases.Mago;
 import Personajes.Personaje;
 
 // Tests unitarios de las armas.

@@ -122,9 +122,27 @@ public class Juego {
 				System.out.println(" No existe ninguna partida con ID " + id + ".");
 				return;
 			}
-			PartidaDAO.DatosPartida datos = dao.cargarPartida(id);
+
+			// Mostrar los turnos disponibles para que el jugador elija
+			List<Integer> turnos = dao.obtenerTurnosDisponibles(id);
+			if (turnos.isEmpty()) {
+				System.out.println(" Esta partida no tiene turnos guardados.");
+				return;
+			}
+
+			System.out.println(" Turnos disponibles: " + turnos);
+			System.out.print(" Desde que turno quieres continuar? ");
+			int turno = leerEntero();
+
+			if (!turnos.contains(turno)) {
+				System.out.println(" Turno no disponible. Cargando el ultimo turno guardado.");
+				turno = turnos.get(turnos.size() - 1);
+			}
+
+			PartidaDAO.DatosPartida datos = dao.cargarPartida(id, turno);
 			System.out.println("\n Cargando partida de " + datos.nombreJugador
-					+ " (Ronda " + datos.rondaActual + " - " + datos.nombreDificultad + ")");
+					+ " desde el turno " + turno
+					+ " (" + datos.nombreDificultad + ")");
 			System.out.println(" Heroes:   " + nombres(datos.heroes));
 			System.out.println(" Villanos: " + nombres(datos.villanos));
 			pausar(1000);
@@ -197,7 +215,7 @@ public class Juego {
 			}
 			System.out.println("\n--- HISTORIAL DE LA PARTIDA " + id + " ---");
 			for (HistorialDAO.EventoHistorial e : historial) {
-				System.out.printf(" [%-6s - Ronda %2d] %s%n", e.tipo, e.ronda, e.descripcion);
+				System.out.printf(" [%-6s - Turno %2d] %s%n", e.tipo, e.ronda, e.descripcion);
 			}
 			System.out.println(" -------------------------------------------");
 		} catch (SQLException e) {

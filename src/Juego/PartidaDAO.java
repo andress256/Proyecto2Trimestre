@@ -27,7 +27,7 @@ public class PartidaDAO {
 		public int    idPartida;
 		public String nombreJugador;
 		public int    rondaActual;
-		public String nombreDificultad = "NORMAL"; // dificultad con la que se creo la partida
+		public String nombreDificultad = "NORMAL";
 		public List<Personaje> heroes   = new ArrayList<>();
 		public List<Personaje> villanos = new ArrayList<>();
 	}
@@ -43,10 +43,13 @@ public class PartidaDAO {
 
 	// --- CREATE ---
 
+	// Crea la partida y guarda el estado inicial en el turno 0
 	public int crearPartida(String nombreJugador, String dificultad,
 			List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
-		String sqlPartida   = "INSERT INTO partida (nombre_jugador, ronda_actual, nombre_dificultad) VALUES (?, 1, ?)";
-		String sqlPersonaje = "INSERT INTO personaje_partida (id_partida, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)";
+		String sqlPartida   = "INSERT INTO partida (nombre_jugador, ronda_actual, nombre_dificultad) VALUES (?, 0, ?)";
+		String sqlPersonaje = "INSERT INTO personaje_partida "
+				+ "(id_partida, ronda, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
 
 		try (Connection conn = ConexionBD.getConexion()) {
 			conn.setAutoCommit(false);
@@ -62,9 +65,10 @@ public class PartidaDAO {
 				}
 			}
 
+			// Estado inicial guardado en turno 0
 			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
-				for (Personaje p : heroes)   insertarPersonaje(ps, idPartida, p, true);
-				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, p, false);
+				for (Personaje p : heroes)   insertarPersonaje(ps, idPartida, 0, p, true);
+				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, 0, p, false);
 				ps.executeBatch();
 			}
 
@@ -73,16 +77,17 @@ public class PartidaDAO {
 		}
 	}
 
-	private void insertarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado)
-			throws SQLException {
+	private void insertarPersonaje(PreparedStatement ps, int idPartida, int ronda,
+			Personaje p, boolean esAliado) throws SQLException {
 		ps.setInt(1, idPartida);
-		ps.setString(2, p.getNombre());
-		ps.setString(3, p.getTipoClase().toString());
-		ps.setInt(4, p.getVidaActual());
-		ps.setInt(5, p.getVidaMax());
-		ps.setInt(6, p.getRecursoActual());
-		ps.setInt(7, p.getRecursoMax());
-		ps.setBoolean(8, esAliado);
+		ps.setInt(2, ronda);
+		ps.setString(3, p.getNombre());
+		ps.setString(4, p.getTipoClase().toString());
+		ps.setInt(5, p.getVidaActual());
+		ps.setInt(6, p.getVidaMax());
+		ps.setInt(7, p.getRecursoActual());
+		ps.setInt(8, p.getRecursoMax());
+		ps.setBoolean(9, esAliado);
 		ps.addBatch();
 	}
 
@@ -97,7 +102,7 @@ public class PartidaDAO {
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery(sql)) {
 			while (rs.next()) {
-				resultado.add(String.format("[%d] %s - %s - Ronda %d - %s (%s)",
+				resultado.add(String.format("[ID:%d] %-15s | %-8s | Ultimo turno: %-3d | %-9s | %s",
 						rs.getInt("id_partida"),
 						rs.getString("nombre_jugador"),
 						rs.getString("nombre_dificultad"),
@@ -120,39 +125,62 @@ public class PartidaDAO {
 		}
 	}
 
-	// Carga una partida incluyendo el nombre del jugador y la dificultad
-	public DatosPartida cargarPartida(int idPartida) throws SQLException {
-		DatosPartida datos = new DatosPartida();
-
-		String sqlCabecera  = "SELECT nombre_jugador, ronda_actual, nombre_dificultad FROM partida WHERE id_partida = ?";
-		String sqlPersonajes = "SELECT nombre, clase, vida_actual, recurso_actual, barra_aturdimiento, es_aliado "
-				+ "FROM personaje_partida WHERE id_partida = ? ORDER BY es_aliado DESC, id_personaje ASC";
-
-		try (Connection conn = ConexionBD.getConexion()) {
-			datos.idPartida = idPartida;
-
-			try (PreparedStatement ps = conn.prepareStatement(sqlCabecera)) {
-				ps.setInt(1, idPartida);
-				try (ResultSet rs = ps.executeQuery()) {
-					if (!rs.next()) throw new SQLException("Partida no encontrada");
-					datos.nombreJugador    = rs.getString("nombre_jugador");
-					datos.rondaActual      = rs.getInt("ronda_actual");
-					datos.nombreDificultad = rs.getString("nombre_dificultad");
-				}
+	// Devuelve los turnos guardados disponibles para una partida
+	public List<Integer> obtenerTurnosDisponibles(int idPartida) throws SQLException {
+		String sql = "SELECT DISTINCT ronda FROM personaje_partida WHERE id_partida = ? ORDER BY ronda ASC";
+		List<Integer> turnos = new ArrayList<>();
+		try (Connection conn = ConexionBD.getConexion();
+				PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, idPartida);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) turnos.add(rs.getInt("ronda"));
 			}
+		}
+		return turnos;
+	}
 
-			try (PreparedStatement ps = conn.prepareStatement(sqlPersonajes)) {
-				ps.setInt(1, idPartida);
-				try (ResultSet rs = ps.executeQuery()) {
-					while (rs.next()) {
-						Personaje p = instanciarPorClase(rs.getString("clase"), rs.getString("nombre"));
-						if (p == null) continue;
-						p.setVidaActual(rs.getInt("vida_actual"));
-						p.setRecursoActual(rs.getInt("recurso_actual"));
-						p.setBarraAturdimiento(rs.getInt("barra_aturdimiento"));
-						if (rs.getBoolean("es_aliado")) datos.heroes.add(p);
-						else                            datos.villanos.add(p);
-					}
+	// Carga la cabecera de la partida (jugador, dificultad, ronda)
+	public DatosPartida cargarCabecera(int idPartida) throws SQLException {
+		String sql = "SELECT nombre_jugador, ronda_actual, nombre_dificultad FROM partida WHERE id_partida = ?";
+		DatosPartida datos = new DatosPartida();
+		datos.idPartida = idPartida;
+		try (Connection conn = ConexionBD.getConexion();
+				PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, idPartida);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (!rs.next()) throw new SQLException("Partida no encontrada");
+				datos.nombreJugador    = rs.getString("nombre_jugador");
+				datos.rondaActual      = rs.getInt("ronda_actual");
+				datos.nombreDificultad = rs.getString("nombre_dificultad");
+			}
+		}
+		return datos;
+	}
+
+	// Carga el estado de los personajes desde un turno concreto
+	public DatosPartida cargarPartida(int idPartida, int turno) throws SQLException {
+		DatosPartida datos = cargarCabecera(idPartida);
+		datos.rondaActual = turno; // el combate arranca desde este turno
+
+		String sqlPersonajes = "SELECT nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, "
+				+ "barra_aturdimiento, es_aliado "
+				+ "FROM personaje_partida "
+				+ "WHERE id_partida = ? AND ronda = ? "
+				+ "ORDER BY es_aliado DESC, id_personaje ASC";
+
+		try (Connection conn = ConexionBD.getConexion();
+				PreparedStatement ps = conn.prepareStatement(sqlPersonajes)) {
+			ps.setInt(1, idPartida);
+			ps.setInt(2, turno);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					Personaje p = instanciarPorClase(rs.getString("clase"), rs.getString("nombre"));
+					if (p == null) continue;
+					p.setVidaActual(rs.getInt("vida_actual"));
+					p.setRecursoActual(rs.getInt("recurso_actual"));
+					p.setBarraAturdimiento(rs.getInt("barra_aturdimiento"));
+					if (rs.getBoolean("es_aliado")) datos.heroes.add(p);
+					else                            datos.villanos.add(p);
 				}
 			}
 		}
@@ -177,40 +205,34 @@ public class PartidaDAO {
 
 	// --- UPDATE ---
 
-	public void guardarPartida(int idPartida, int rondaActual, List<Personaje> heroes, List<Personaje> villanos)
-			throws SQLException {
+	// Guarda el estado de los personajes en el turno indicado (INSERT nuevo, no UPDATE)
+	// Asi se conserva el historial turno a turno y se puede cargar cualquiera despues
+	public void guardarPartida(int idPartida, int ronda,
+			List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
 		String sqlPartida   = "UPDATE partida SET ronda_actual = ? WHERE id_partida = ?";
-		String sqlPersonaje = "UPDATE personaje_partida SET vida_actual = ?, recurso_actual = ?, barra_aturdimiento = ? "
-				+ "WHERE id_partida = ? AND nombre = ? AND es_aliado = ?";
+		String sqlPersonaje = "INSERT INTO personaje_partida "
+				+ "(id_partida, ronda, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = ConexionBD.getConexion()) {
 			conn.setAutoCommit(false);
 
+			// Actualiza el ultimo turno guardado en la cabecera
 			try (PreparedStatement ps = conn.prepareStatement(sqlPartida)) {
-				ps.setInt(1, rondaActual);
+				ps.setInt(1, ronda);
 				ps.setInt(2, idPartida);
 				ps.executeUpdate();
 			}
 
+			// Inserta el estado de todos los personajes para este turno
 			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
-				for (Personaje p : heroes)   actualizarPersonaje(ps, idPartida, p, true);
-				for (Personaje p : villanos) actualizarPersonaje(ps, idPartida, p, false);
+				for (Personaje p : heroes)   insertarPersonaje(ps, idPartida, ronda, p, true);
+				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, ronda, p, false);
 				ps.executeBatch();
 			}
 
 			conn.commit();
 		}
-	}
-
-	private void actualizarPersonaje(PreparedStatement ps, int idPartida, Personaje p, boolean esAliado)
-			throws SQLException {
-		ps.setInt(1, p.getVidaActual());
-		ps.setInt(2, p.getRecursoActual());
-		ps.setInt(3, p.getBarraAturdimiento());
-		ps.setInt(4, idPartida);
-		ps.setString(5, p.getNombre());
-		ps.setBoolean(6, esAliado);
-		ps.addBatch();
 	}
 
 	public void marcarResultado(int idPartida, String resultado) throws SQLException {
