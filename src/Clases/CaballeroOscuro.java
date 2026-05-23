@@ -13,6 +13,7 @@ public class CaballeroOscuro extends Personaje {
         this.arma = CatalogoArmas.GRAN_MAZA_RENOIR.getArma();
     }
 
+    // Absorbe 1 de cada 3 golpes fisicos de hechizo
     @Override
     public void recibirDaño(int cantidad) {
         contadorGolpesRecibidos++;
@@ -21,6 +22,17 @@ public class CaballeroOscuro extends Personaje {
             return;
         }
         super.recibirDaño(cantidad);
+    }
+
+    // Absorbe 1 de cada 3 golpes de arma
+    @Override
+    public void recibirDañoDeArma(int cantidad) {
+        contadorGolpesRecibidos++;
+        if (contadorGolpesRecibidos % 3 == 0) {
+            System.out.println("   [!] La armadura cromatica de " + nombre + " ABSORBE el golpe!");
+            return;
+        }
+        super.recibirDañoDeArma(cantidad);
     }
 
     @Override

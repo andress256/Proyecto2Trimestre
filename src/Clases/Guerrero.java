@@ -12,9 +12,16 @@ public class Guerrero extends Personaje {
         this.arma = CatalogoArmas.ESPADON_GUSTAVE.getArma();
     }
 
+    // Reduce un 10% el daño fisico de hechizos (donde la defensa se resta en recibirDaño)
     @Override
     public void recibirDaño(int cantidad) {
         super.recibirDaño((int)(cantidad * 0.90));
+    }
+
+    // Reduce un 10% el daño de ataques con arma (donde la defensa ya se calculo en el arma)
+    @Override
+    public void recibirDañoDeArma(int cantidad) {
+        super.recibirDañoDeArma((int)(cantidad * 0.90));
     }
 
     @Override

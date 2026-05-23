@@ -63,7 +63,8 @@ public abstract class Personaje {
 		return false;
 	}
 
-	// Daño fisico: se reduce con la defensa del personaje
+	// Daño fisico generico: resta la defensa del personaje.
+	// Usado por hechizos fisicos como FlechaEnvenenada.
 	public void recibirDaño(int cantidad) {
 		int dañoReal = Math.max(1, cantidad - defensaBase);
 		vidaActual = Math.max(0, vidaActual - dañoReal);
@@ -73,7 +74,18 @@ public abstract class Personaje {
 		}
 	}
 
-	// Daño puro: ignora la defensa
+	// Daño de arma: la defensa YA fue calculada en el arma (calcularDaño es bidireccional).
+	// Solo aplica el daño y sube la barra de aturdimiento, sin restar defensa otra vez.
+	public void recibirDañoDeArma(int cantidad) {
+		int dañoReal = Math.max(1, cantidad);
+		vidaActual = Math.max(0, vidaActual - dañoReal);
+		incrementarBarraAturdimiento(dañoReal);
+		if (!estaVivo()) {
+			System.out.println("  >>  " + nombre + " ha caido!");
+		}
+	}
+
+	// Daño puro: ignora la defensa (usado por magias y estados como veneno)
 	public void recibirDañoPuro(int cantidad) {
 		vidaActual = Math.max(0, vidaActual - cantidad);
 		if (!estaVivo()) {
@@ -150,20 +162,22 @@ public abstract class Personaje {
 		}
 	}
 
+	// Calcula el daño del ataque basico usando el arma equipada.
+	// El arma ya tiene en cuenta atacante y defensor (bidireccional).
 	public int calcularDañoBasicoContra(Personaje objetivo) {
 		if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
 		return arma.calcularDaño(this, objetivo);
 	}
 
+	// Realiza un ataque fisico con el arma contra otro personaje.
+	// Usa recibirDañoDeArma porque la defensa ya se calculo en el arma.
 	public void atacarCon(Personaje objetivo) {
 		int daño = calcularDañoBasicoContra(objetivo);
 		System.out.printf("  %-16s ataca a %-16s -> %d dmg%n", nombre, objetivo.getNombre(), daño);
-		objetivo.recibirDaño(daño);
+		objetivo.recibirDañoDeArma(daño);
 	}
 
 	// Aplica los multiplicadores de dificultad al personaje.
-	// Se llama una vez al crear la partida, antes de que empiece el combate.
-	// multVida escala vidaMax, multRecurso escala recursoMax, multAtaque escala ataqueBase.
 	public void escalarConDificultad(double multVida, double multRecurso, double multAtaque) {
 		this.vidaMax       = Math.max(1, (int)(this.vidaMax * multVida));
 		this.vidaActual    = this.vidaMax;

@@ -41,15 +41,22 @@ public class PartidaDAO {
 		public double porcentajeVictorias;
 	}
 
+	// SQL reutilizable para insertar un personaje con todos sus campos.
+	// Los 10 parametros son: id_partida, ronda, nombre, clase,
+	// vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado
+	private static final String SQL_INSERTAR_PERSONAJE =
+			"INSERT INTO personaje_partida "
+			+ "(id_partida, ronda, nombre, clase, vida_actual, vida_max, "
+			+ "recurso_actual, recurso_max, barra_aturdimiento, es_aliado) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 	// --- CREATE ---
 
 	// Crea la partida y guarda el estado inicial en el turno 0
 	public int crearPartida(String nombreJugador, String dificultad,
 			List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
-		String sqlPartida   = "INSERT INTO partida (nombre_jugador, ronda_actual, nombre_dificultad) VALUES (?, 0, ?)";
-		String sqlPersonaje = "INSERT INTO personaje_partida "
-				+ "(id_partida, ronda, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
+
+		String sqlPartida = "INSERT INTO partida (nombre_jugador, ronda_actual, nombre_dificultad) VALUES (?, 0, ?)";
 
 		try (Connection conn = ConexionBD.getConexion()) {
 			conn.setAutoCommit(false);
@@ -66,7 +73,7 @@ public class PartidaDAO {
 			}
 
 			// Estado inicial guardado en turno 0
-			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
+			try (PreparedStatement ps = conn.prepareStatement(SQL_INSERTAR_PERSONAJE)) {
 				for (Personaje p : heroes)   insertarPersonaje(ps, idPartida, 0, p, true);
 				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, 0, p, false);
 				ps.executeBatch();
@@ -77,6 +84,9 @@ public class PartidaDAO {
 		}
 	}
 
+	// Rellena los 10 parametros del PreparedStatement y lo añade al batch.
+	// CORRECCION: antes faltaba el parametro 9 (barra_aturdimiento),
+	// lo que causaba el error "No value specified for parameter 10"
 	private void insertarPersonaje(PreparedStatement ps, int idPartida, int ronda,
 			Personaje p, boolean esAliado) throws SQLException {
 		ps.setInt(1, idPartida);
@@ -87,7 +97,8 @@ public class PartidaDAO {
 		ps.setInt(6, p.getVidaMax());
 		ps.setInt(7, p.getRecursoActual());
 		ps.setInt(8, p.getRecursoMax());
-		ps.setBoolean(9, esAliado);
+		ps.setInt(9, p.getBarraAturdimiento());  // CORREGIDO: faltaba este parametro
+		ps.setBoolean(10, esAliado);             // CORREGIDO: era parametro 9, ahora es 10
 		ps.addBatch();
 	}
 
@@ -160,7 +171,7 @@ public class PartidaDAO {
 	// Carga el estado de los personajes desde un turno concreto
 	public DatosPartida cargarPartida(int idPartida, int turno) throws SQLException {
 		DatosPartida datos = cargarCabecera(idPartida);
-		datos.rondaActual = turno; // el combate arranca desde este turno
+		datos.rondaActual = turno;
 
 		String sqlPersonajes = "SELECT nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, "
 				+ "barra_aturdimiento, es_aliado "
@@ -205,14 +216,12 @@ public class PartidaDAO {
 
 	// --- UPDATE ---
 
-	// Guarda el estado de los personajes en el turno indicado (INSERT nuevo, no UPDATE)
-	// Asi se conserva el historial turno a turno y se puede cargar cualquiera despues
+	// Guarda el estado de los personajes en el turno indicado.
+	// Hace INSERT (no UPDATE) para conservar el historial turno a turno.
 	public void guardarPartida(int idPartida, int ronda,
 			List<Personaje> heroes, List<Personaje> villanos) throws SQLException {
-		String sqlPartida   = "UPDATE partida SET ronda_actual = ? WHERE id_partida = ?";
-		String sqlPersonaje = "INSERT INTO personaje_partida "
-				+ "(id_partida, ronda, nombre, clase, vida_actual, vida_max, recurso_actual, recurso_max, barra_aturdimiento, es_aliado) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		String sqlPartida = "UPDATE partida SET ronda_actual = ? WHERE id_partida = ?";
 
 		try (Connection conn = ConexionBD.getConexion()) {
 			conn.setAutoCommit(false);
@@ -225,7 +234,7 @@ public class PartidaDAO {
 			}
 
 			// Inserta el estado de todos los personajes para este turno
-			try (PreparedStatement ps = conn.prepareStatement(sqlPersonaje)) {
+			try (PreparedStatement ps = conn.prepareStatement(SQL_INSERTAR_PERSONAJE)) {
 				for (Personaje p : heroes)   insertarPersonaje(ps, idPartida, ronda, p, true);
 				for (Personaje p : villanos) insertarPersonaje(ps, idPartida, ronda, p, false);
 				ps.executeBatch();

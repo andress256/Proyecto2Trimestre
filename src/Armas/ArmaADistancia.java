@@ -2,7 +2,7 @@ package Armas;
 
 import Personajes.Personaje;
 
-// Arma a distancia: ignora parte de la defensa del enemigo
+// Arma a distancia: ignora parte de la defensa del enemigo (bidireccional)
 public class ArmaADistancia extends Arma {
 
 	// Porcentaje de defensa del defensor que se ignora (0.0 a 1.0)
@@ -16,16 +16,17 @@ public class ArmaADistancia extends Arma {
 
 	@Override
 	public int calcularDaño(Personaje atacante, Personaje defensor) {
-		// Suma parte de la defensa del enemigo al daño para simular penetracion
-		int daño = dañoBase + atacante.getAtaqueBase() + (int)(defensor.getDefensaBase() * ignorarDefensa);
+		// La defensa efectiva se reduce segun el porcentaje de penetracion.
+		// Si ignorarDefensa = 0.40, solo se aplica el 60% de la defensa del enemigo.
+		int defensaEfectiva = (int)(defensor.getDefensaBase() * (1.0 - ignorarDefensa));
+		int daño = dañoBase + atacante.getAtaqueBase() - defensaEfectiva;
 		if (esCritico()) {
 			daño = (int)(daño * multiplicadorCritico);
-			System.out.println(" [CRITICO]");
+			System.out.println("  [CRITICO]");
 		}
-		return daño;
+		return Math.max(1, daño); // minimo 1 de daño
 	}
 
 	@Override
 	public String descripcion() { return "[Dist] " + super.descripcion(); }
 }
-
