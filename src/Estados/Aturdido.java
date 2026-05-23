@@ -7,7 +7,7 @@ import Personajes.Personaje;
 public class Aturdido extends Estado {
 
 	public Aturdido() {
-		super("ATURDIDO", 1, 0, TipoEstado.CONTROL);
+		super("ATURDIDO", 2, 0, TipoEstado.CONTROL);
 	}
 
 	@Override
