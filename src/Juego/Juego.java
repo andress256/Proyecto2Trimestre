@@ -53,12 +53,16 @@ public class Juego {
 	}
 
 	private void nuevaPartida() {
-		System.out.print(" Nombre del jugador: ");
-		String nombre = sc.nextLine().trim();
-		if (nombre.isEmpty()) {
-			System.out.println(" El nombre no puede estar vacio.");
-			return;
-		}
+	    System.out.print(" Nombre del jugador: ");
+	    String nombre = sc.nextLine().trim();
+	    if (nombre.isEmpty()) {
+	        System.out.println(" El nombre no puede estar vacio.");
+	        return;
+	    }
+	    if (nombre.length() > 50) {
+	        System.out.println(" El nombre no puede superar los 50 caracteres. (Has puesto " + nombre.length() + ")");
+	        return;
+	    }
 
 		try {
 			DificultadDAO.Dificultad dificultad = seleccionarDificultad();
