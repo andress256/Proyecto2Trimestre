@@ -16,15 +16,15 @@ public class ArmaADistancia extends Arma {
 
 	@Override
 	public int calcularDaño(Personaje atacante, Personaje defensor) {
-		// La defensa efectiva se reduce segun el porcentaje de penetracion.
-		// Si ignorarDefensa = 0.40, solo se aplica el 60% de la defensa del enemigo.
-		int defensaEfectiva = (int)(defensor.getDefensaBase() * (1.0 - ignorarDefensa));
-		int daño = dañoBase + atacante.getAtaqueBase() - defensaEfectiva;
-		if (esCritico()) {
-			daño = (int)(daño * multiplicadorCritico);
-			System.out.println("  [CRITICO]");
-		}
-		return Math.max(1, daño); // minimo 1 de daño
+	    // La defensa ignorada se suma al daño (representa la penetración)
+	    // Si ignorarDefensa = 0.40, suma el 40% de la defensa del enemigo al daño
+	    int defensaIgnorada = (int)(defensor.getDefensaBase() * ignorarDefensa);
+	    int daño = dañoBase + atacante.getAtaqueBase() + defensaIgnorada;
+	    if (esCritico()) {
+	        daño = (int)(daño * multiplicadorCritico);
+	        System.out.println("  [CRITICO]");
+	    }
+	    return Math.max(1, daño);
 	}
 
 	@Override

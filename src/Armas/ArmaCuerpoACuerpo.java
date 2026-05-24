@@ -12,13 +12,14 @@ public class ArmaCuerpoACuerpo extends Arma {
 
 	@Override
 	public int calcularDaño(Personaje atacante, Personaje defensor) {
-		// Daño base + 130% del ataque del atacante - defensa del defensor
-		int daño = dañoBase + (int)(atacante.getAtaqueBase() * 1.3) - defensor.getDefensaBase();
-		if (esCritico()) {
-			daño = (int)(daño * multiplicadorCritico);
-			System.out.println("  [CRITICO!]");
-		}
-		return Math.max(1, daño); // minimo 1 de daño
+	    // Daño base + 130% del ataque del atacante
+	    // (la defensa se resta después en recibirDañoDeArma, no aquí)
+	    int daño = dañoBase + (int)(atacante.getAtaqueBase() * 1.3);
+	    if (esCritico()) {
+	        daño = (int)(daño * multiplicadorCritico);
+	        System.out.println("  [CRITICO!]");
+	    }
+	    return Math.max(1, daño);
 	}
 
 	@Override
