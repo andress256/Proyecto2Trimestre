@@ -97,8 +97,8 @@ public class PartidaDAO {
 		ps.setInt(6, p.getVidaMax());
 		ps.setInt(7, p.getRecursoActual());
 		ps.setInt(8, p.getRecursoMax());
-		ps.setInt(9, p.getBarraAturdimiento());  // CORREGIDO: faltaba este parametro
-		ps.setBoolean(10, esAliado);             // CORREGIDO: era parametro 9, ahora es 10
+		ps.setInt(9, p.getBarraAturdimiento());  
+		ps.setBoolean(10, esAliado);             
 		ps.addBatch();
 	}
 

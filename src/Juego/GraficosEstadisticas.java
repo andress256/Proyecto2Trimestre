@@ -20,7 +20,7 @@ public class GraficosEstadisticas {
 	 * Muestra un gráfico de barras con el daño base de todas las armas del juego,
 	 * ordenadas de menor a mayor daño.
 	 */
-	public static void graficoDanoArmas() {
+	public static void graficoDañoArmas() {
 		// Armas ordenadas de menor a mayor daño base (datos de CatalogoArmas)
 		List<String>  nombres = Arrays.asList(
 				"Varita Monoco",
@@ -39,7 +39,7 @@ public class GraficosEstadisticas {
 				"Hacha Monolito",
 				"Gran Maza Renoir"
 		);
-		List<Integer> danos = Arrays.asList(
+		List<Integer> daños = Arrays.asList(
 				11, 13, 15, 16, 15, 17, 18, 18, 20, 20, 22, 24, 28, 32, 38
 		);
 
@@ -54,7 +54,7 @@ public class GraficosEstadisticas {
 		chart.getStyler().setAvailableSpaceFill(0.5);
 		chart.getStyler().setPlotGridLinesVisible(true);
 
-		chart.addSeries("Daño base", nombres, danos);
+		chart.addSeries("Daño base", nombres, daños);
 
 		new SwingWrapper<>(chart).displayChart();
 	}

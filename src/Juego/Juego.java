@@ -237,7 +237,7 @@ public class Juego {
 			System.out.print(" Opcion: ");
 
 			switch (leerEntero()) {
-				case 1 -> GraficosEstadisticas.graficoDanoArmas();
+				case 1 -> GraficosEstadisticas.graficoDañoArmas();
 				case 2 -> GraficosEstadisticas.graficoVidaPersonajes();
 				case 3 -> volver = true;
 				default -> System.out.println(" Opcion no valida.");
