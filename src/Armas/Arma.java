@@ -18,7 +18,7 @@ public abstract class Arma {
 	}
 
 	// Cada subclase define como calcula su daño
-	public abstract int calcularDaño(Personaje atacante, Personaje defensor);
+	protected abstract int calcularDaño(Personaje atacante, Personaje defensor);
 
 	// Devuelve true aleatoriamente segun la probabilidad de critico
 	protected boolean esCritico() {

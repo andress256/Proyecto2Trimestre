@@ -11,7 +11,7 @@ public class ArmaCuerpoACuerpo extends Arma {
 	}
 
 	@Override
-	public int calcularDaño(Personaje atacante, Personaje defensor) {
+	protected int calcularDaño(Personaje atacante, Personaje defensor) {
 	    // Daño base + 130% del ataque del atacante
 	    // (la defensa se resta después en recibirDañoDeArma, no aquí)
 	    int daño = dañoBase + (int)(atacante.getAtaqueBase() * 1.3);

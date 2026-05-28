@@ -166,7 +166,7 @@ public abstract class Personaje {
 	// El arma ya tiene en cuenta atacante y defensor (bidireccional).
 	public int calcularDañoBasicoContra(Personaje objetivo) {
 		if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
-		return arma.calcularDaño(this, objetivo);
+		return Arma.calcularDaño(this, objetivo);
 	}
 
 	// Realiza un ataque fisico con el arma contra otro personaje.
