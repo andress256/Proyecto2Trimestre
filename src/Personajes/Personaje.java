@@ -162,11 +162,9 @@ public abstract class Personaje {
 		}
 	}
 
-	// Calcula el daño del ataque basico usando el arma equipada.
-	// El arma ya tiene en cuenta atacante y defensor (bidireccional).
 	public int calcularDañoBasicoContra(Personaje objetivo) {
-		if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
-		return Arma.calcularDaño(this, objetivo);
+	    if (arma == null) return Math.max(1, ataqueBase - objetivo.defensaBase);
+	    return arma.calcularDaño(objetivo); 
 	}
 
 	// Realiza un ataque fisico con el arma contra otro personaje.

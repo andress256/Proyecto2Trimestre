@@ -26,7 +26,7 @@ class TestArmas {
 	@DisplayName("Arma CaC daño es mayor que cero")
 	void armaCaCDañoEsMayorQueCero() {
 		ArmaCuerpoACuerpo arma = new ArmaCuerpoACuerpo("TestEspada", 20, 0.0, 2.0);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertTrue(daño > 0);
 	}
 
@@ -34,7 +34,7 @@ class TestArmas {
 	@DisplayName("Arma CaC daño incluye 130% de ataque")
 	void armaCaCDañoIncluye130PorCientoDeAtaque() {
 		ArmaCuerpoACuerpo arma = new ArmaCuerpoACuerpo("TestEspada", 20, 0.0, 2.0);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertEquals(56, daño);
 	}
 
@@ -43,8 +43,8 @@ class TestArmas {
 	void armaCaCDañoCriticoEsMayor() {
 		ArmaCuerpoACuerpo armaNormal  = new ArmaCuerpoACuerpo("Normal",  20, 0.0, 2.0);
 		ArmaCuerpoACuerpo armaCritica = new ArmaCuerpoACuerpo("Critica", 20, 1.0, 2.0);
-		int dañoNormal  = armaNormal.calcularDaño(atacante, defensor);
-		int dañoCritico = armaCritica.calcularDaño(atacante, defensor);
+		int dañoNormal  = armaNormal.calcularDaño(atacante);
+		int dañoCritico = armaCritica.calcularDaño(atacante);
 		assertTrue(dañoCritico > dañoNormal);
 	}
 
@@ -52,7 +52,7 @@ class TestArmas {
 	@DisplayName("Arma CaC multiplicador crítico se cumple")
 	void armaCaCMultiplicadorCriticoSeCumple() {
 		ArmaCuerpoACuerpo arma = new ArmaCuerpoACuerpo("TestEspada", 20, 1.0, 2.0);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertEquals(112, daño);
 	}
 
@@ -60,7 +60,7 @@ class TestArmas {
 	@DisplayName("Arma a distancia daño es mayor que cero")
 	void armaDistanciaDañoEsMayorQueCero() {
 		ArmaADistancia arma = new ArmaADistancia("TestArco", 15, 0.0, 1.8, 0.4);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertTrue(daño > 0);
 	}
 
@@ -68,7 +68,7 @@ class TestArmas {
 	@DisplayName("Arma a distancia ignora parte defensa enemigo")
 	void armaDistanciaIgnoraParteDefensaEnemigo() {
 		ArmaADistancia arma = new ArmaADistancia("TestArco", 15, 0.0, 1.8, 0.4);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertEquals(48, daño);
 	}
 
@@ -76,7 +76,7 @@ class TestArmas {
 	@DisplayName("Arma a distancia con ignorar defensa cero")
 	void armaDistanciaConIgnorarDefensaCero() {
 		ArmaADistancia arma = new ArmaADistancia("TestArco", 15, 0.0, 1.8, 0.0);
-		int daño = arma.calcularDaño(atacante, defensor);
+		int daño = arma.calcularDaño(atacante);
 		assertEquals(43, daño);
 	}
 
@@ -85,8 +85,8 @@ class TestArmas {
 	void armaDistanciaDañoCriticoEsMayor() {
 		ArmaADistancia armaNormal  = new ArmaADistancia("Normal",  15, 0.0, 2.0, 0.4);
 		ArmaADistancia armaCritica = new ArmaADistancia("Critica", 15, 1.0, 2.0, 0.4);
-		int dañoNormal  = armaNormal.calcularDaño(atacante, defensor);
-		int dañoCritico = armaCritica.calcularDaño(atacante, defensor);
+		int dañoNormal  = armaNormal.calcularDaño(atacante);
+		int dañoCritico = armaCritica.calcularDaño(atacante);
 		assertTrue(dañoCritico > dañoNormal);
 	}
 
