@@ -13,7 +13,7 @@ import java.util.List;
 public class MagoOscuro extends Personaje {
     public MagoOscuro(String nombre) {
         super(nombre, TipoClase.MAGO_OSCURO, 170, 200, 10, 45, 6, 130);
-        this.arma = CatalogoArmas.CETRO_PINTORA.getArma();
+        equiparArma (CatalogoArmas.CETRO_PINTORA.getArma());
         this.hechizos.add(new MaldicionDeLaPintora());
         this.hechizos.add(new ImpactoCalcinante());
         this.hechizos.add(new OleadaOscura());

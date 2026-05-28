@@ -107,6 +107,7 @@ public abstract class Personaje {
 
 	public void equiparArma(Arma arma) {
 		this.arma = arma;
+		 if (arma != null) arma.setPortador(this);
 	}
 
 	// Aplica un estado. Si ya existe el mismo, lo renueva en lugar de apilarlo

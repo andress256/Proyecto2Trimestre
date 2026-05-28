@@ -11,7 +11,7 @@ import java.util.List;
 public class GuardianPintado extends Personaje {
     public GuardianPintado(String nombre) {
         super(nombre, TipoClase.GUARDIAN_PINTADO, 140, 70, 18, 10, 8, 90);
-        this.arma = CatalogoArmas.BALLESTA_ABISMO.getArma();
+        equiparArma (CatalogoArmas.BALLESTA_ABISMO.getArma());
         this.hechizos.add(new FlechaEnvenenada());
         this.hechizos.add(new SombraCromatica());
     }

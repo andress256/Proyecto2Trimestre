@@ -10,7 +10,7 @@ public class CaballeroOscuro extends Personaje {
 
     public CaballeroOscuro(String nombre) {
         super(nombre, TipoClase.CABALLERO_OSCURO, 250, 0, 35, 0, 18, 150);
-        this.arma = CatalogoArmas.GRAN_MAZA_RENOIR.getArma();
+        equiparArma (CatalogoArmas.GRAN_MAZA_RENOIR.getArma());
     }
 
     // Absorbe 1 de cada 3 golpes fisicos de hechizo

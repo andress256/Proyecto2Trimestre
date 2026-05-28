@@ -11,7 +11,7 @@ import java.util.List;
 public class Mago extends Personaje {
     public Mago(String nombre) {
         super(nombre, TipoClase.MAGO, 130, 160, 8, 35, 5, 80);
-        this.arma = CatalogoArmas.BASTON_LUNE.getArma();
+        equiparArma (CatalogoArmas.BASTON_LUNE.getArma());
         this.hechizos.add(new ImpactoCalcinante());
         this.hechizos.add(new LlamaPicta());
     }

@@ -9,7 +9,7 @@ import java.util.List;
 public class Guerrero extends Personaje {
     public Guerrero(String nombre) {
         super(nombre, TipoClase.GUERRERO, 200, 0, 28, 0, 14, 120);
-        this.arma = CatalogoArmas.ESPADON_GUSTAVE.getArma();
+        equiparArma (CatalogoArmas.ESPADON_GUSTAVE.getArma());
     }
 
     // Reduce un 10% el daño fisico de hechizos (donde la defensa se resta en recibirDaño)

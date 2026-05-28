@@ -11,7 +11,7 @@ import java.util.List;
 public class Ilusionista extends Personaje {
     public Ilusionista(String nombre) {
         super(nombre, TipoClase.ILUSIONISTA, 135, 110, 10, 25, 8, 95);
-        this.arma = CatalogoArmas.VARITA_MONOCO.getArma();
+        equiparArma (CatalogoArmas.VARITA_MONOCO.getArma());
         this.hechizos.add(new VeloDeIlusion());
         this.hechizos.add(new LuzCelestial());
     }

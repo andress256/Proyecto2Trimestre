@@ -10,7 +10,7 @@ import java.util.List;
 public class Explorador extends Personaje {
     public Explorador(String nombre) {
         super(nombre, TipoClase.EXPLORADOR, 155, 90, 20, 10, 8, 85);
-        this.arma = CatalogoArmas.ARCO_LARGO_EXPEDICION.getArma();
+        equiparArma (CatalogoArmas.ARCO_LARGO_EXPEDICION.getArma());
         this.hechizos.add(new FlechaEnvenenada());
     }
 

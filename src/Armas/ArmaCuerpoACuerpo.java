@@ -12,7 +12,7 @@ public class ArmaCuerpoACuerpo extends Arma {
 
 	@Override
 	public int calcularDaño(Personaje defensor) {
-	    int daño = dañoBase; 
+	    int daño = dañoBase + (int)(portador.getAtaqueBase() * 1.3);
 	    if (esCritico()) {
 	        daño = (int)(daño * multiplicadorCritico);
 	        System.out.println("  [CRITICO!]");

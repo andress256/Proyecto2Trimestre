@@ -8,7 +8,7 @@ import java.util.List;
 public class BrutoPintado extends Personaje {
     public BrutoPintado(String nombre) {
         super(nombre, TipoClase.BRUTO_PINTADO, 160, 0, 26, 0, 10, 100);
-        this.arma = CatalogoArmas.MARTILLO_CROMATICO.getArma();
+        equiparArma (CatalogoArmas.MARTILLO_CROMATICO.getArma());
     }
 
     @Override

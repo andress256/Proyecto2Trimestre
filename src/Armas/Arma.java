@@ -10,6 +10,12 @@ public abstract class Arma {
 	protected double probCritico;         // probabilidad de critico entre 0 y 1
 	protected double multiplicadorCritico; // por cuanto se multiplica el daño en critico
 
+	protected Personaje portador;
+	
+	public void setPortador(Personaje portador) {
+		this.portador = portador;
+	}
+	
 	public Arma(String nombre, int dañoBase, double probCritico, double multiplicadorCritico) {
 		this.nombre = nombre;
 		this.dañoBase = dañoBase;

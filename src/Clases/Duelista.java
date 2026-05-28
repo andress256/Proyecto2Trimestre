@@ -10,7 +10,7 @@ import java.util.List;
 public class Duelista extends Personaje {
     public Duelista(String nombre) {
         super(nombre, TipoClase.DUELISTA, 150, 80, 24, 12, 7, 90);
-        this.arma = CatalogoArmas.ESTOQUE_MAELLE.getArma();
+        equiparArma (CatalogoArmas.ESTOQUE_MAELLE.getArma());
         this.hechizos.add(new SombraCromatica());
     }
 
