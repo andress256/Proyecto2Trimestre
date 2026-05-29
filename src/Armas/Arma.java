@@ -9,7 +9,6 @@ public abstract class Arma {
 	protected int dañoBase;
 	protected double probCritico;         // probabilidad de critico entre 0 y 1
 	protected double multiplicadorCritico; // por cuanto se multiplica el daño en critico
-
 	protected Personaje portador;
 	
 	public void setPortador(Personaje portador) {
