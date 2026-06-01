@@ -187,6 +187,7 @@ public abstract class Personaje {
 
 	public abstract void elegirAccionIA(List<Personaje> aliados, List<Personaje> enemigos);
 
+	
 	public String resumenCombate() {
 		int barras = maxBarraAturdimiento > 0
 				? (int) ((double) barraAturdimiento / maxBarraAturdimiento * 8) : 0;
